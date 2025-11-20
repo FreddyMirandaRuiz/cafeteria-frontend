@@ -1,0 +1,83 @@
+<!-- Login -->
+<div *ngIf="!usuario" class="login-wrapper">
+  <app-login (loginExitoso)="onLogin($event)"></app-login>
+</div>
+
+<!-- Panel de usuario -->
+<div *ngIf="usuario" class="panel-container">
+  <!-- Sidebar lateral -->
+  <aside class="sidebar">
+    <div class="logo">
+      ☕ Cafetería
+    </div>
+
+    <div class="user-info">
+      <div class="avatar">{{ usuario.nombre.charAt(0).toUpperCase() }}</div>
+      <div class="user-text">
+        <h3>{{ usuario.nombre }}</h3>
+        <p>{{ usuario.rol | titlecase }}</p>
+      </div>
+    </div>
+
+    <nav>
+      <!-- 🔹 Productos -->
+      <button *ngIf="usuario.rol?.toLowerCase() === 'admin'" 
+              [class.active]="mostrar==='productos'" 
+              (click)="seleccionarModulo('productos')">📦 Productos</button>
+
+      <!-- 🔹 Ventas -->
+      <button *ngIf="usuario.rol?.toLowerCase() !== 'mesero' && usuario.rol?.toLowerCase() !== 'cocina'" 
+              [class.active]="mostrar==='ventas'" 
+              (click)="seleccionarModulo('ventas')">💰 Registrar Venta</button>
+
+      <!-- 🔹 Historial de ventas -->
+      <button *ngIf="usuario.rol?.toLowerCase() !== 'mesero' && usuario.rol?.toLowerCase() !== 'cocina'" 
+              [class.active]="mostrar==='historial'" 
+              (click)="seleccionarModulo('historial')">📜 Historial de Venta</button>
+
+      <!-- 🔹 NUEVO: Historial de pedidos (admin + mesero) -->
+      <button *ngIf="usuario.rol?.toLowerCase() === 'admin' || usuario.rol?.toLowerCase() === 'mesero'"
+              [class.active]="mostrar==='historial-pedidos'"
+              (click)="seleccionarModulo('historial-pedidos')">
+        📋 Historial de Pedidos
+      </button>
+
+      <!-- 🔹 Pedidos -->
+      <button *ngIf="usuario.rol?.toLowerCase() === 'admin' || usuario.rol?.toLowerCase() === 'mesero'" 
+              [class.active]="mostrar==='pedidos'" 
+              (click)="seleccionarModulo('pedidos')">📝 Pedidos</button>
+
+      <!-- 🔹 Cocina -->
+      <button *ngIf="usuario.rol?.toLowerCase() === 'admin' || usuario.rol?.toLowerCase() === 'cocina'" 
+              [class.active]="mostrar==='cocina'" 
+              (click)="seleccionarModulo('cocina')">🍳 Cocina</button>
+
+      <!-- 🔹 Usuarios (solo admin) -->
+      <button *ngIf="usuario.rol?.toLowerCase() === 'admin'"
+              [class.active]="mostrar==='usuarios'"
+              (click)="seleccionarModulo('usuarios')">
+        👥 Usuarios
+      </button>
+    </nav>
+
+    <button class="logout-btn" (click)="logout()">Cerrar Sesión</button>
+  </aside>
+
+  <!-- Contenido principal -->
+  <main class="main-content">
+    <header class="main-header">
+      <h1>Bienvenido, {{ usuario.nombre }}</h1>
+      <p class="role-text">{{ usuario.rol | titlecase }}</p>
+    </header>
+
+    <section class="modulo-container" [ngSwitch]="mostrar">
+      <app-productos *ngSwitchCase="'productos'"></app-productos>
+      <app-ventas *ngSwitchCase="'ventas'"></app-ventas>
+      <app-historial *ngSwitchCase="'historial'"></app-historial>
+      <app-historial-pedidos *ngSwitchCase="'historial-pedidos'"></app-historial-pedidos> <!-- ✅ Nuevo -->
+      <app-pedidos *ngSwitchCase="'pedidos'"></app-pedidos>
+      <app-cocina *ngSwitchCase="'cocina'"></app-cocina>
+      <app-usuarios *ngSwitchCase="'usuarios'"></app-usuarios>
+    </section>
+  </main>
+</div>

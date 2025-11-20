@@ -1,0 +1,86 @@
+.card-header {
+  background: linear-gradient(90deg, #007bff, #00bcd4);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.table {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.table thead th {
+  background-color: #212529 !important;
+  color: white !important;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+}
+
+.venta-row:hover {
+  background-color: #f8f9fa;
+  transition: background-color 0.2s ease;
+}
+
+.btn-info {
+  background-color: #17a2b8;
+  border: none;
+}
+
+.btn-info:hover {
+  background-color: #138496;
+}
+
+.alert-info {
+  border-radius: 8px;
+  background-color: #eaf4ff;
+  border: 1px solid #b8daff;
+  color: #004085;
+}
+
+.modal-content {
+  border-radius: 12px;
+}
+
+.modal-header {
+  background: linear-gradient(90deg, #007bff, #00bcd4);
+  color: white;
+}
+
+.list-group-item {
+  border: none;
+  border-bottom: 1px solid #eee;
+}
+
+input.form-control {
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+
+/* Elegante */
+.search-input {
+  border-radius: 25px;
+  padding: 10px 18px;
+  border: 1px solid #d0d7de;
+  background-color: #f8f9fa;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+}
+
+.search-input:focus {
+  background-color: #ffffff;
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.25);
+}
+
+.search-input::placeholder {
+  color: #7a7a7a;
+  font-style: italic;
+}
+
+/* Opción A: tamaño mediano */
+.search-medium {
+  width: 320px;
+}
+
+
+

@@ -1,0 +1,56 @@
+<div class="resenas-container">
+  <div class="resenas-card">
+    <h2 class="titulo">⭐ Opiniones del producto</h2>
+
+    <!-- Lista de reseñas -->
+    <div *ngIf="resenas && resenas.length > 0; else sinResenas">
+      <div *ngFor="let r of resenas" class="resena-item">
+        <div class="resena-header">
+          <strong>{{ r.nombreCliente }}</strong>
+          <span class="estrellas">
+            <ng-container *ngFor="let n of [].constructor(r.calificacion)">
+              ⭐
+            </ng-container>
+          </span>
+        </div>
+        <p class="comentario">{{ r.comentario }}</p>
+      </div>
+    </div>
+
+    <!-- Mensaje si no hay reseñas -->
+    <ng-template #sinResenas>
+      <p class="sin-resenas">Aún no hay reseñas para este producto ☕</p>
+    </ng-template>
+
+    <hr class="separador" />
+
+    <!-- Formulario -->
+    <h4 class="subtitulo">📝 Deja tu reseña</h4>
+
+    <form (ngSubmit)="agregarResena()" class="formulario">
+      <input
+        [(ngModel)]="nombreCliente"
+        name="nombreCliente"
+        class="form-control"
+        placeholder="Tu nombre"
+        required
+      />
+
+      <textarea
+        [(ngModel)]="comentario"
+        name="comentario"
+        class="form-control"
+        placeholder="Escribe tu experiencia..."
+        required
+      ></textarea>
+
+      <select [(ngModel)]="calificacion" name="calificacion" class="form-select">
+        <option *ngFor="let n of [1,2,3,4,5]" [value]="n">
+          {{ n }} estrellas
+        </option>
+      </select>
+
+      <button class="btn-enviar">Enviar reseña</button>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,77 @@
+.container {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.pedido-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pedido-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.list-group-item {
+  border: none;
+  padding: 0.6rem 0;
+  font-size: 0.95rem;
+}
+
+.btn-outline-primary {
+  border-radius: 20px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-outline-primary:hover {
+  background-color: #0d6efd;
+  color: white;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.btn-pdf {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.btn-pdf:hover {
+  background-color: #0d6efd;
+  color: white;
+  transform: scale(1.05);
+}
+
+.btn-pdf:active {
+  transform: scale(0.95);
+}
+
+/* ✨ efecto de onda */
+.btn-pdf::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  transform: scale(0);
+  animation: ripple 0.6s linear;
+  pointer-events: none;
+}
+
+@keyframes ripple {
+  to {
+    transform: scale(8);
+    opacity: 0;
+  }
+}

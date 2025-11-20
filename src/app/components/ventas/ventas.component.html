@@ -1,0 +1,280 @@
+<div class="container mt-4">
+
+  <h2 class="text-center mb-4">🧾 Registro de Ventas</h2>
+
+  <!-- SELECCIÓN DE CLIENTE Y TIPO DE COMPROBANTE -->
+  <div class="row mb-3">
+    <div class="col-md-4">
+      <label>Cliente</label>
+      <input type="text" [(ngModel)]="cliente" class="form-control" placeholder="Nombre del cliente"
+	  name="cliente"
+	  required
+	  #clienteInput="ngModel" />
+	  <div *ngIf="!cliente?.trim()" class="text-danger small mt-1">
+	     ⚠️ El nombre del cliente es obligatorio.
+	  </div>
+    </div>
+    <div class="col-md-3">
+      <label>Tipo de comprobante</label>
+      <select [(ngModel)]="tipoComprobante" class="form-select">
+        <option value="boleta">Boleta</option>
+        <option value="factura">Factura</option>
+      </select>
+    </div>
+    <div class="col-md-3" *ngIf="tipoComprobante === 'factura'">
+      <label>RUC Cliente <span class="text-danger">*</span></label>
+      <input type="text"
+	  [(ngModel)]="rucCliente" 
+	  class="form-control" 
+	  placeholder="Ingrese RUC (11 didgitos)"
+	  maxlength="11"
+	  name="rucCliente"
+	  required
+	  (keypress)="soloNumeros($event)" />
+	  
+	  
+	  <div *ngIf="tipoComprobante === 'factura' && !rucCliente?.trim()" class="text-danger small mt-1">
+	     ⚠️ El RUC del cliente o empresa es obligatorio.
+	  </div>
+	  
+	  <!-- Mensaje si empieza a escribir pero no tiene 11 dígitos -->
+	  <div
+	    *ngIf="tipoComprobante === 'factura' && rucCliente?.trim() && !esRucValido()"
+	    class="text-danger small mt-1"
+	  >
+	    ⚠️ El RUC debe tener exactamente 11 dígitos numéricos.
+	  </div>
+	  
+    </div>
+  </div>
+
+  <!-- LISTA DE PRODUCTOS -->
+  <div class="mb-4">
+    <h5>☕ Productos disponibles</h5>
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover">
+        <thead class="table-light">
+          <tr>
+            <th>Producto</th>
+            <th>Precio (S/)</th>
+            <th>Stock</th>
+			<th> Aciones</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of productos">
+            <td>{{ p.nombre }}</td>
+            <td>{{ p.precio | number:'1.2-2' }}</td>
+            <td>{{ p.stock }}</td>
+            <td>
+              <button class="btn btn-success btn-sm" (click)="agregarProducto(p)">
+                ➕ Agregar
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- DETALLES DE LA VENTA -->
+  <div *ngIf="detalles.length > 0">
+    <h5>🧺 Detalle de la venta</h5>
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped">
+        <thead class="table-light">
+          <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Precio (S/)</th>
+            <th>Subtotal (S/)</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let d of detalles; let i = index">
+            <td>{{ d.producto.nombre }}</td>
+            <td>
+              <input type="number" [(ngModel)]="d.cantidad" class="form-control form-control-sm" min="1" />
+            </td>
+            <td>{{ d.producto.precio | number:'1.2-2' }}</td>
+            <td>{{ d.producto.precio * d.cantidad | number:'1.2-2' }}</td>
+            <td>
+              <button class="btn btn-danger btn-sm" (click)="eliminarDetalle(i)">❌</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- TOTALES -->
+    <div class="text-end mt-3">
+      <p><strong>Subtotal:</strong> S/ {{ calcularSubtotal() | number:'1.2-2' }}</p>
+      <p><strong>IGV (18%):</strong> S/ {{ calcularIGV() | number:'1.2-2' }}</p>
+      <h5><strong>Total a pagar:</strong> S/ {{ calcularTotal() | number:'1.2-2' }}</h5>
+    </div>
+	
+	<!-- BOTÓN REGISTRAR -->
+    <div class="text-end mt-4">
+      <button class="btn btn-primary px-4 py-2"
+	   (click)="abrirConfirmacion()"
+	   [disabled]="!puedeRegistrarVenta()">
+	   Registrar venta</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CONFIRMACIÓN -->
+<div class="modal fade" id="modalConfirmarVenta" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">Confirmar venta</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p>¿Desea registrar la venta por un total de <strong>S/ {{ calcularTotal() | number:'1.2-2' }}</strong>?</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn btn-success" (click)="abrirModalPago()">Proceder al pago</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DE PAGO -->
+<div class="modal fade" id="modalPago" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title">Método de pago</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <!-- SELECCIÓN DE MÉTODO -->
+        <div class="d-flex justify-content-around mb-4">
+          <button class="btn" [ngClass]="{'btn-primary': paymentMethod === 'tarjeta', 'btn-outline-primary': paymentMethod !== 'tarjeta'}" (click)="seleccionarMetodo('tarjeta')">💳 Tarjeta</button>
+          <button class="btn" [ngClass]="{'btn-success': paymentMethod === 'qr', 'btn-outline-success': paymentMethod !== 'qr'}" (click)="seleccionarMetodo('qr')">📱 QR</button>
+          <button class="btn" [ngClass]="{'btn-warning': paymentMethod === 'efectivo', 'btn-outline-warning': paymentMethod !== 'efectivo'}" (click)="seleccionarMetodo('efectivo')">💵 Efectivo</button>
+        </div>
+
+        <!-- TARJETA -->
+        <div *ngIf="paymentMethod === 'tarjeta'">
+          <div class="row">
+            <div class="col-md-6">
+              <label>Número de tarjeta</label>
+              <input type="text"
+			   [(ngModel)]="tarjeta.numero"
+			   maxlength="19" 
+			   class="form-control"
+			   placeholder="XXXX XXXX XXXX XXXX"
+			   (keydown)="soloNumeros($event)"
+			   (input)="formatearNumeroTarjeta()"
+			   (paste)="formatearPegadoTarjeta($event)" /> 
+			   
+			   <div *ngIf="tarjeta.numero && !numeroTarjetaValido()" class="text-danger small mt-1">
+			     ⚠️ El número de tarjeta debe tener 16 dígitos válidos.
+			   </div>
+            </div>
+			
+            <div class="col-md-6">
+              <label>Nombre del titular</label>
+              <input type="text" 
+			  [(ngModel)]="tarjeta.nombre" 
+			  class="form-control"
+			  placeholder="Nombre completo" />
+			  <div *ngIf="tarjeta.nombre && tarjeta.nombre.trim().length < 3" class="text-danger small mt-1">
+			     ⚠️ El nombre debe tener al menos 3 caracteres.
+			  </div>
+			  
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-md-4">
+              <label>Expiración</label>
+              <input type="text" 
+			  [(ngModel)]="tarjeta.exp" 
+			  maxlength="5" 
+			  class="form-control" 
+			  placeholder="MM/AA"
+			  (keypress)="soloNumerosExpiracion($event)"
+			  (input)="formatearExpiracion()" />
+			  
+			  
+			  <div *ngIf="expTarjetaInvalido()" class="text-danger small mt-1">
+			    ⚠️ Use el formato MM/AA.
+			  </div>
+			  <div *ngIf="!expTarjetaInvalido() && tarjeta.exp && !validarExp(tarjeta.exp)" class="text-danger small mt-1">
+			    ⚠️ La tarjeta está vencida o la fecha es inválida.
+			  </div>
+			  
+			  
+            </div>
+			
+			
+            <div class="col-md-4">
+              <label>CVV</label>
+              <input type="password" 
+			  [(ngModel)]="tarjeta.cvv" 
+			  maxlength="3" 
+			  class="form-control" 
+			  placeholder="***"
+			  (keypress)="soloNumeros($event)" />
+			  <div *ngIf="cvvInvalido()" class="text-danger small mt-1">
+			    ⚠️ El CVV debe tener 3 dígitos.
+			  </div>
+			  
+            </div>
+            <div class="col-md-4">
+              <label>Cuotas</label>
+              <select [(ngModel)]="tarjeta.cuotas" class="form-select">
+                <option *ngFor="let n of [1,2,3,6,12]" [value]="n">{{ n }}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- QR -->
+        <div *ngIf="paymentMethod === 'qr'">
+          <div class="text-center">
+            <p>Seleccione app de pago:</p>
+            <div class="d-flex justify-content-center mb-3">
+              <button class="btn mx-2" [ngClass]="{'btn-primary': qr.metodo === 'yape', 'btn-outline-primary': qr.metodo !== 'yape'}" (click)="qr.metodo='yape'">📱 Yape</button>
+              <button class="btn mx-2" [ngClass]="{'btn-info': qr.metodo === 'plin', 'btn-outline-info': qr.metodo !== 'plin'}" (click)="qr.metodo='plin'">📲 Plin</button>
+            </div>
+            <img *ngIf="qr.metodo === 'yape'" src="assets/yape-qr.png" width="200" alt="QR Yape" />
+            <img *ngIf="qr.metodo === 'plin'" src="assets/plin-qr.png" width="200" alt="QR Plin" />
+            <input type="text" [(ngModel)]="qr.referencia" class="form-control mt-3" placeholder="Referencia opcional" />
+          </div>
+        </div>
+
+        <!-- EFECTIVO -->
+        <div *ngIf="paymentMethod === 'efectivo'">
+          <div class="row">
+            <div class="col-md-6">
+              <label>Monto recibido</label>
+              <input type="text" 
+			  [(ngModel)]="efectivo.montoRecibido" 
+			  class="form-control" 
+			  (input)="validarMontoEfectivo($event); calcularCambio()" />
+			  <div class="text-danger small mt-1" *ngIf="montoEfectivoInvalido()">
+			    ⚠️ El monto recibido debe ser mayor o igual al total.
+			  </div>
+            </div>
+            <div class="col-md-6">
+              <label>Cambio</label>
+              <input type="text" [value]="efectivo.cambio | number:'1.2-2'" class="form-control" readonly />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn btn-success" [disabled]="!puedeConfirmarPago()" (click)="confirmarPago()">Confirmar pago</button>
+      </div>
+    </div>
+  </div>
+</div>

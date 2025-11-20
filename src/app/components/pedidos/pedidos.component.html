@@ -1,0 +1,131 @@
+<!-- ✅ Toast flotante -->
+<div *ngIf="mostrarToast" class="toast-flotante" [ngClass]="{
+  'toast-success': tipoMensaje === 'success',
+  'toast-error': tipoMensaje === 'error'
+}">
+  {{ mensaje }}
+</div>
+
+<div class="pedidos-wrapper">
+  <header class="header">
+    <h2>🍽️ Pedidos - {{ mozoNombre }}</h2>
+  </header>
+
+  <div class="container">
+    <!-- 🔹 Registro de nuevo pedido -->
+    <h3>🧾 Registrar Nuevo Pedido</h3>
+    <form (ngSubmit)="crearPedido()" class="pedido-form">
+      <div class="form-row">
+        <label>Nombre del Mozo:</label>
+        <input type="text" [(ngModel)]="mozoNombre" name="mozo" readonly>
+      </div>
+
+      <div class="form-row">
+        <label>Número de Mesa:</label>
+        <input type="text" [(ngModel)]="nuevoPedido.mesa" name="mesa" placeholder="Ej: M001" required>
+      </div>
+
+      <div class="form-row">
+        <label>Producto:</label>
+        <select [(ngModel)]="selectedProductId" name="producto" (ngModelChange)="calcularTotal()" required>
+          <option [ngValue]="null">-- Selecciona un producto --</option>
+          <option *ngFor="let p of productos" [ngValue]="p.id">
+            {{ p.nombre }} - S/ {{ p.precio | number:'1.2-2' }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <label>Cantidad:</label>
+        <input type="number" [(ngModel)]="nuevoPedido.cantidad" name="cantidad" min="1" (input)="calcularTotal()" required>
+      </div>
+
+      <div class="resumen-precio" *ngIf="selectedProductId">
+        <p><strong>Precio unitario:</strong> S/ {{ precioUnitario | number:'1.2-2' }}</p>
+        <p><strong>Subtotal:</strong> S/ {{ subtotal | number:'1.2-2' }}</p>
+        <p><strong>IGV (18%):</strong> S/ {{ igv | number:'1.2-2' }}</p>
+        <p><strong>Total a pagar:</strong> <span class="total">S/ {{ totalConIGV | number:'1.2-2' }}</span></p>
+      </div>
+
+      <button type="submit" class="btn-registrar">Registrar Pedido</button>
+    </form>
+
+    <!-- 🔹 Resumen de estados -->
+    <div class="resumen-estados" *ngIf="pedidos.length > 0">
+      <div class="card-resumen pendiente">📦 Pendientes: {{ contadores.pendiente }}</div>
+      <div class="card-resumen preparacion">🔥 En preparación: {{ contadores.preparacion }}</div>
+      <div class="card-resumen listo">🍽️ Listos: {{ contadores.listo }}</div>
+      <div class="card-resumen servido">✅ Servidos: {{ contadores.servido }}</div>
+      <div class="card-resumen entregado">🎁 Entregados: {{ contadores.entregado }}</div>
+    </div>
+
+    <!-- 🔹 Barra de progreso -->
+    <div class="barra-progreso-wrapper" *ngIf="pedidos.length > 0">
+      <p class="texto-progreso">
+        Progreso general: <strong>{{ progresoAnimado | number:'1.0-0' }}%</strong>
+      </p>
+      <div class="barra-progreso">
+        <div class="progreso" [style.width.%]="progresoAnimado"
+             [ngClass]="{
+               'baja': progresoAnimado < 40,
+               'media': progresoAnimado >= 40 && progresoAnimado < 80,
+               'alta': progresoAnimado >= 80
+             }"></div>
+      </div>
+    </div>
+
+    <!-- 🔹 Tabla de pedidos -->
+    <h3>📋 Pedidos Actuales</h3>
+    <table *ngIf="pedidos.length > 0; else noPedidos" class="tabla-pedidos">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Mozo</th>
+          <th>Mesa</th>
+          <th>Producto</th>
+          <th>Cantidad</th>
+          <th>Total</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let pedido of pedidos">
+          <td>{{ pedido.id }}</td>
+          <td>{{ pedido.mozo }}</td>
+          <td>{{ pedido.mesa }}</td>
+          <td>{{ pedido.productos }}</td>
+          <td>{{ pedido.cantidad }}</td>
+          <td>S/ {{ pedido.total | number:'1.2-2' }}</td>
+          <td>
+            <span class="badge" [ngClass]="{
+              'badge-pendiente': pedido.estado === 'pendiente',
+              'badge-preparacion': pedido.estado === 'en preparación',
+              'badge-listo': pedido.estado === 'listo para servir',
+              'badge-servido': pedido.estado === 'servido',
+              'badge-entregado': pedido.estado === 'entregado'
+            }">{{ pedido.estado | titlecase }}</span>
+          </td>
+          <td>
+            <div class="acciones-botones">
+              <button class="btn-accion preparar"
+                      (click)="cambiarEstado(pedido, 'en preparación')"
+                      [disabled]="pedido.estado !== 'pendiente'">🧑‍🍳 Preparar</button>
+              <button class="btn-accion servir"
+                      (click)="cambiarEstado(pedido, 'servido')"
+                      [disabled]="pedido.estado !== 'en preparación' && pedido.estado !== 'listo para servir'">🍽️ Servir</button>
+              <button class="btn-accion entregar"
+                      (click)="cambiarEstado(pedido, 'entregado')"
+                      [disabled]="pedido.estado !== 'servido'">✅ Entregar</button>
+              <button class="btn-accion eliminar" (click)="eliminarPedido(pedido)">🗑️ Eliminar</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <ng-template #noPedidos>
+      <p class="no-pedidos">No hay pedidos registrados.</p>
+    </ng-template>
+  </div>
+</div>

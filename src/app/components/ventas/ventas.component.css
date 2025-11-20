@@ -1,0 +1,169 @@
+/* ====== ESTILO GENERAL ====== */
+.container {
+  max-width: 1100px;
+}
+
+h2 {
+  font-weight: 700;
+  color: #4b3621;
+}
+
+h5 {
+  color: #5a4634;
+  font-weight: 600;
+}
+
+.table {
+  background-color: #fffdf9;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.table thead {
+  background-color: #f8f2e9;
+  color: #4b3621;
+  text-transform: uppercase;
+  font-size: 14px;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #f3ede5;
+}
+
+.btn {
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+}
+
+/* ====== BOTONES PRINCIPALES ====== */
+.btn-primary {
+  background-color: #6b4f29;
+  border-color: #6b4f29;
+  padding: 10px 28px;      /* Más grande */
+  font-size: 1rem;         /* Texto más legible */
+  font-weight: 600;        /* Un poco más grueso */
+  border-radius: 10px;     /* Bordes más suaves */
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: #8b6638;
+  border-color: #8b6638;
+  transform: scale(1.05);  /* Efecto suave */
+}
+
+.btn-success {
+  background-color: #4caf50;
+}
+
+.btn-warning {
+  background-color: #ffb300;
+  color: #fff;
+}
+
+.btn-outline-warning {
+  color: #ffb300;
+  border-color: #ffb300;
+}
+
+.btn-outline-warning:hover {
+  background-color: #ffb300;
+  color: white;
+}
+
+/* ====== FORMULARIOS ====== */
+input.form-control,
+select.form-select {
+  border-radius: 6px;
+  border: 1px solid #c2b8a3;
+  background-color: #fffaf3;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  box-shadow: 0 0 4px #d2a679;
+  border-color: #d2a679;
+}
+
+/* ====== MODALES ====== */
+.modal-content {
+  border-radius: 15px;
+  border: none;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+.modal-header {
+  border-bottom: none;
+}
+
+.modal-title {
+  font-weight: bold;
+  font-size: 1.25rem;
+}
+
+.modal-body {
+  background-color: #fffdf9;
+  color: #4b3621;
+}
+
+.modal-footer {
+  border-top: none;
+  padding-top: 0;
+}
+
+/* ====== SECCIÓN DE PAGO ====== */
+.d-flex button {
+  min-width: 120px;
+  font-weight: 600;
+}
+
+#modalPago img {
+  border-radius: 10px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* ====== TOTALES ====== */
+.text-end p, .text-end h5 {
+  margin-bottom: 0.3rem;
+}
+
+.text-end h5 {
+  color: #4b3621;
+  font-weight: 700;
+}
+
+/* ====== EFECTOS DE INTERFAZ ====== */
+.table td, .table th {
+  vertical-align: middle;
+  text-align: center;
+}
+
+input[type="number"] {
+  text-align: center;
+}
+
+.btn-close {
+  filter: invert(30%);
+}
+
+/* ====== RESPONSIVE ====== */
+@media (max-width: 768px) {
+  .table {
+    font-size: 13px;
+  }
+
+  .d-flex button {
+    min-width: 100px;
+    font-size: 0.9rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+}

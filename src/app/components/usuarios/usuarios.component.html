@@ -1,0 +1,89 @@
+<div class="container mt-4">
+  <h2 class="mb-4">👤 Gestión de Usuarios</h2>
+
+  <!-- Formulario de registro -->
+  <form (ngSubmit)="registrar()" class="card p-3 mb-4 shadow-sm">
+    <h5>➕ Registrar nuevo usuario</h5>
+    <input [(ngModel)]="nuevoUsuario.nombre" name="nombre" class="form-control mb-2" placeholder="Nombre" required>
+    <input [(ngModel)]="nuevoUsuario.usuario" name="usuario" class="form-control mb-2" placeholder="Usuario" required>
+    <input [(ngModel)]="nuevoUsuario.password" name="password" class="form-control mb-2" type="password" placeholder="Contraseña" required>
+
+    <select [(ngModel)]="nuevoUsuario.rol" name="rol" class="form-select mb-2" required>
+      <option value="">Seleccionar rol</option>
+      <option value="ADMIN">Administrador</option>
+      <option value="CAJERO">Cajero</option>
+      <option value="MESERO">Mesero</option>
+      <option value="COCINA">Cocinero</option>
+    </select>
+
+    <button class="btn btn-primary w-100">Guardar usuario</button>
+  </form>
+
+  <!-- Tabla de usuarios -->
+  <h5>📋 Usuarios registrados</h5>
+  <table class="table table-striped mt-3 shadow-sm">
+    <thead class="table-dark">
+      <tr>
+        <th>Nombre</th>
+        <th>Usuario</th>
+        <th>Rol</th>
+        <th class="text-center">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let u of usuarios">
+        <td>{{ u.nombre }}</td>
+        <td>{{ u.usuario }}</td>
+        <td>{{ u.rol }}</td>
+        <td class="text-center">
+          <button class="btn btn-warning btn-sm me-2" (click)="abrirModal(u)">✏️ Modificar</button>
+          <button class="btn btn-danger btn-sm" (click)="eliminar(u.id!)">🗑 Eliminar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 🔹 Modal de edición -->
+<div class="modal fade" id="modalEditarUsuario" tabindex="-1" aria-labelledby="modalEditarUsuarioLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="modalEditarUsuarioLabel">✏️ Editar Usuario</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label>Nombre</label>
+            <input [(ngModel)]="usuarioEdit.nombre" name="editNombre" class="form-control">
+          </div>
+
+          <div class="mb-3">
+            <label>Usuario</label>
+            <input [(ngModel)]="usuarioEdit.usuario" name="editUsuario" class="form-control">
+          </div>
+
+          <div class="mb-3">
+            <label>Contraseña</label>
+            <input [(ngModel)]="usuarioEdit.password" name="editPassword" type="password" class="form-control">
+          </div>
+
+          <div class="mb-3">
+            <label>Rol</label>
+            <select [(ngModel)]="usuarioEdit.rol" name="editRol" class="form-select">
+              <option value="ADMIN">Administrador</option>
+              <option value="CAJERO">Cajero</option>
+              <option value="MESERO">Mesero</option>
+              <option value="COCINA">Cocinero</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn btn-success" (click)="guardarCambios()">Guardar cambios ✅</button>
+      </div>
+    </div>
+  </div>
+</div>

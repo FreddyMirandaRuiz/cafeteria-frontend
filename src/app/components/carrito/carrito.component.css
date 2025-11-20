@@ -1,0 +1,123 @@
+/* Fondo general */
+.carrito-container {
+  background-color: #f9f5f0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 80px;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Tarjeta principal */
+.carrito-card {
+  background: #fff;
+  padding: 40px;
+  border-radius: 15px;
+  width: 800px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Título */
+.titulo {
+  text-align: center;
+  font-size: 2rem;
+  color: #4b2e05;
+  font-weight: 700;
+  margin-bottom: 30px;
+}
+
+/* Tabla */
+.tabla-carrito {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fdfcf9;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.tabla-carrito thead {
+  background-color: #c2a776;
+  color: #fff;
+}
+
+.tabla-carrito th,
+.tabla-carrito td {
+  padding: 15px;
+  text-align: center;
+  font-size: 1rem;
+  border-bottom: 1px solid #e0d4b7;
+}
+
+.tabla-carrito tbody tr:hover {
+  background-color: #f5f0e8;
+}
+
+/* Carrito vacío */
+.vacio {
+  text-align: center;
+  color: #777;
+  font-size: 1.1rem;
+  background-color: #f5f0e8;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 30px;
+  border-left: 5px solid #c2a776;
+}
+
+/* Total */
+.total-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 25px;
+  border-top: 2px dashed #c2a776;
+  padding-top: 15px;
+}
+
+.total-section h4 {
+  font-size: 1.3rem;
+  color: #4b2e05;
+  font-weight: 700;
+}
+
+.total-section span {
+  color: #8b4513;
+}
+
+/* Botón finalizar */
+.btn-finalizar {
+  background-color: #8b4513;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  cursor: pointer;
+}
+
+.btn-finalizar:hover {
+  background-color: #6e320c;
+  transform: scale(1.05);
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .carrito-card {
+    width: 90%;
+    padding: 25px;
+  }
+
+  .tabla-carrito th,
+  .tabla-carrito td {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+
+  .total-section {
+    flex-direction: column;
+    gap: 15px;
+  }
+}

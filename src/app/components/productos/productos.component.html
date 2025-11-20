@@ -1,0 +1,99 @@
+<div class="productos-container container mt-4">
+
+  <!-- 🔍 Barra superior -->
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+    <h2 class="text-primary fw-bold m-0">📦 Gestión de Productos</h2>
+    <input
+      type="text"
+      class="form-control buscador"
+      [(ngModel)]="busqueda"
+      (input)="filtrarProductos()"
+      placeholder="🔍 Buscar producto por nombre o categoría"
+    >
+  </div>
+
+  <!-- ➕ Formulario de nuevo producto -->
+  <div class="card shadow-sm p-4 mb-4 border-0">
+    <h4 class="text-secondary mb-3">➕ Agregar nuevo producto</h4>
+    <div class="form-grid">
+      <input [(ngModel)]="nuevoProducto.nombre" class="form-control" placeholder="Nombre" required>
+      <input type="number" [(ngModel)]="nuevoProducto.precio" class="form-control" placeholder="Precio" required>
+      <input type="number" [(ngModel)]="nuevoProducto.stock" class="form-control" placeholder="Stock" required>
+      <input [(ngModel)]="nuevoProducto.categoria" class="form-control" placeholder="Categoría" required>
+      <input [(ngModel)]="nuevoProducto.descripcion" class="form-control" placeholder="Descripción">
+      
+      <!-- Preview de imagen -->
+      <div class="preview-container mb-2" *ngIf="previewImagen">
+        <img [src]="previewImagen" alt="Preview" class="img-preview">
+      </div>
+      
+      <input type="file" (change)="onArchivoSeleccionado($event)" class="form-control mb-2">
+      <button class="btn btn-success w-100 mt-2" (click)="guardarProducto()">💾 Guardar Producto</button>
+    </div>
+  </div>
+
+  <!-- 🛍️ Catálogo -->
+  <h4 class="fw-bold text-primary mb-3">🛍️ Catálogo de Productos</h4>
+
+  <div *ngIf="productosFiltrados.length > 0; else sinProductos" class="catalogo">
+    <div class="card producto-card shadow-sm" *ngFor="let prod of productosFiltrados">
+      <img 
+        [src]="prod.imagen ? 'http://localhost:8080/uploads/' + prod.imagen : 'https://via.placeholder.com/250x150?text=' + prod.nombre" 
+        alt="{{prod.nombre}}" 
+        class="card-img-top rounded-top"
+      >
+      <div class="card-body">
+        <h5 class="card-title fw-bold">{{ prod.nombre }}</h5>
+        <p class="mb-1"><strong>💲 Precio:</strong> {{ prod.precio | currency:'S/ ' }}</p>
+        <p class="mb-1"><strong>📦 Stock:</strong> {{ prod.stock }}</p>
+        <p class="mb-1"><strong>🏷️ Categoría:</strong> {{ prod.categoria }}</p>
+        <p class="descripcion">{{ prod.descripcion }}</p>
+      </div>
+      <div class="card-footer d-flex justify-content-between">
+        <button class="btn btn-outline-primary btn-sm w-50 me-1" (click)="abrirModal(prod)">✏️ Editar</button>
+        <button class="btn btn-outline-danger btn-sm w-50" (click)="eliminarProducto(prod.id!)">🗑 Eliminar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⚠️ Sin productos -->
+  <ng-template #sinProductos>
+    <div class="alert alert-warning text-center mt-4">
+      ⚠️ No hay productos registrados.
+    </div>
+  </ng-template>
+</div>
+
+<!-- ✏️ Modal de edición -->
+<div class="modal fade" id="modalEditarProducto" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg rounded-4">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">✏️ Modificar Producto</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <div *ngIf="editarProducto" class="form-grid">
+          <input [(ngModel)]="editarProducto.nombre" class="form-control mb-2" placeholder="Nombre">
+          <input type="number" [(ngModel)]="editarProducto.precio" class="form-control mb-2" placeholder="Precio">
+          <input type="number" [(ngModel)]="editarProducto.stock" class="form-control mb-2" placeholder="Stock">
+          <input [(ngModel)]="editarProducto.categoria" class="form-control mb-2" placeholder="Categoría">
+          <input [(ngModel)]="editarProducto.descripcion" class="form-control mb-2" placeholder="Descripción">
+
+          <!-- Preview de imagen -->
+          <div class="preview-container mb-2" *ngIf="previewImagen">
+            <img [src]="previewImagen" alt="Preview" class="img-preview">
+          </div>
+
+          <input type="file" (change)="onArchivoSeleccionado($event)" class="form-control mb-2">
+        </div>
+      </div>
+
+      <div class="modal-footer justify-content-center">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">❌ Cancelar</button>
+        <button class="btn btn-success" (click)="guardarModificacion()">💾 Guardar Cambios</button>
+      </div>
+    </div>
+  </div>
+</div>

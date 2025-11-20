@@ -1,0 +1,62 @@
+<div class="container py-4">
+  <h2 class="text-center mb-5 display-6 fw-bold text-cocina-title">
+    👨‍🍳 Pedidos en Cocina
+  </h2>
+
+  <!-- Mensaje si no hay pedidos -->
+  <div *ngIf="pedidos.length === 0" class="alert alert-info text-center shadow-sm">
+    No hay pedidos pendientes por el momento. ¡Buen trabajo equipo! 🎉
+  </div>
+
+  <div class="row g-4">
+    <div *ngFor="let pedido of pedidos" class="col-12 col-md-6 col-lg-4">
+      <div class="card pedido-card h-100">
+        <div class="card-body d-flex flex-column justify-content-between">
+
+          <!-- Cabecera del pedido -->
+          <div>
+            <h5 class="card-title mb-3 text-primary-emphasis">
+              🪑 Mesa <span class="fw-bold">#{{ pedido.mesa }}</span>
+            </h5>
+
+            <!-- Detalles del pedido -->
+            <ul class="list-unstyled small">
+              <li><strong>🧾 Productos:</strong> {{ pedido.productos }}</li>
+              <li><strong>🔢 Cantidad:</strong> {{ pedido.cantidad }}</li>
+              <li><strong>💰 Total:</strong> S/. {{ pedido.total | number:'1.2-2' }}</li>
+              <li><strong>🧍 Mozo:</strong> {{ pedido.mozo }}</li>
+              <li>
+                <strong>📌 Estado:</strong>
+                <span class="badge estado-badge" [ngClass]="{
+                  'bg-secondary': pedido.estado === 'pendiente',
+                  'bg-warning text-dark': pedido.estado === 'en preparación',
+                  'bg-success': pedido.estado === 'listo para servir'
+                }">
+                  {{ pedido.estado }}
+                </span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Acciones -->
+          <div class="mt-auto">
+            <button
+              *ngIf="pedido.estado === 'pendiente'"
+              class="btn btn-warning btn-sm w-100 mb-2 fw-semibold"
+              (click)="marcarPreparado(pedido)">
+              🧑‍🍳 Marcar en preparación
+            </button>
+
+            <button
+              *ngIf="pedido.estado === 'en preparación'"
+              class="btn btn-success btn-sm w-100 fw-semibold"
+              (click)="marcarListo(pedido)">
+              ✅ Marcar listo para servir
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,76 @@
+<div class="carrito-container">
+  <div class="carrito-card">
+    <h2 class="titulo">🧺 Tu Carrito</h2>
+
+    <table *ngIf="carrito.length > 0; else vacio" class="tabla-carrito">
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Precio</th>
+          <th>Cantidad</th>
+          <th>Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of carrito">
+          <td>{{ p.nombre }}</td>
+          <td>{{ p.precio | currency: 'USD' }}</td>
+          <td>{{ p.cantidad }}</td>
+          <td>{{ p.precio * p.cantidad | currency: 'USD' }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <ng-template #vacio>
+      <p class="vacio">🛒 Tu carrito está vacío. <br />¡Agrega tus productos favoritos ☕!</p>
+    </ng-template>
+
+    <div class="total-section" *ngIf="carrito.length > 0">
+      <h4>Total: <span>{{ total | currency: 'USD' }}</span></h4>
+      <button class="btn-finalizar" (click)="realizarCompra()">
+        ✅ Finalizar compra
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de pago -->
+<div class="modal fade" id="modalPago" tabindex="-1" aria-labelledby="modalPagoLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="modalPagoLabel">💳 Elige un método de pago</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="d-grid gap-2">
+          <button class="btn btn-outline-success" (click)="seleccionarMetodo('tarjeta')">💳 Tarjeta</button>
+          <button class="btn btn-outline-primary" (click)="seleccionarMetodo('yape')">📱 Yape</button>
+          <button class="btn btn-outline-info" (click)="seleccionarMetodo('plin')">💠 Plin</button>
+        </div>
+
+        <div *ngIf="metodoPago === 'tarjeta'" class="mt-3">
+          <h6>Datos de la tarjeta</h6>
+          <input class="form-control mb-2" placeholder="Número de tarjeta">
+          <input class="form-control mb-2" placeholder="Titular">
+          <input class="form-control mb-2" placeholder="Fecha de expiración (MM/AA)">
+          <input class="form-control mb-2" placeholder="CVV">
+        </div>
+
+        <div *ngIf="metodoPago === 'yape'" class="mt-3 text-center">
+          <h6>Escanea el QR de Yape 📱</h6>
+          <img src="assets/yape-qr.png" alt="Yape QR" class="img-fluid rounded shadow-lg" style="max-width: 250px;">
+        </div>
+
+        <div *ngIf="metodoPago === 'plin'" class="mt-3 text-center">
+          <h6>Escanea el QR de Plin 💠</h6>
+          <img src="assets/plin-qr.png" alt="Plin QR" class="img-fluid rounded shadow-lg" style="max-width: 250px;">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn btn-success" (click)="confirmarPago()">Finalizar compra ✅</button>
+      </div>
+    </div>
+  </div>
+</div>

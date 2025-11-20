@@ -1,0 +1,112 @@
+/* Fondo general */
+.registro-container {
+  background-color: #f9f5f0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Tarjeta central */
+.registro-card {
+  background-color: #fff;
+  padding: 40px 35px;
+  border-radius: 15px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  width: 400px;
+  text-align: center;
+}
+
+/* Título */
+.titulo {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #4b2e05;
+  margin-bottom: 10px;
+}
+
+/* Subtexto */
+.subtexto {
+  font-size: 0.95rem;
+  color: #6b6b6b;
+  margin-bottom: 25px;
+}
+
+/* Campos del formulario */
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  text-align: left;
+}
+
+.campo label {
+  color: #4b2e05;
+  font-weight: 600;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.form-control {
+  border: 1px solid #c2a776;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: #8b4513;
+  outline: none;
+}
+
+/* Botón */
+.btn-registrar {
+  background-color: #8b4513;
+  color: #fff;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-top: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-registrar:hover {
+  background-color: #6e320c;
+  transform: scale(1.05);
+}
+
+/* Link de login */
+.login-link {
+  margin-top: 20px;
+  color: #4b2e05;
+  font-size: 0.95rem;
+}
+
+.login-link a {
+  color: #8b4513;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.login-link a:hover {
+  color: #6e320c;
+  text-decoration: underline;
+}
+
+/* Responsivo */
+@media (max-width: 500px) {
+  .registro-card {
+    width: 90%;
+    padding: 30px 20px;
+  }
+
+  .titulo {
+    font-size: 1.5rem;
+  }
+}

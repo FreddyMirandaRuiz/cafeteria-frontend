@@ -1,0 +1,254 @@
+/* ======= CONTENEDOR GENERAL ======= */
+.pedidos-wrapper {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 30px;
+  background-color: #fafafa;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+  text-align: center;
+  background: linear-gradient(90deg, #ff9a3c, #ff6a00);
+  color: white;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.container {
+  padding: 10px;
+}
+
+/* ======= FORMULARIO ======= */
+.pedido-form {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.pedido-form label {
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 4px;
+}
+
+.pedido-form input,
+.pedido-form select {
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  outline: none;
+  font-size: 15px;
+  transition: border-color 0.2s ease-in-out;
+}
+
+.pedido-form input:focus,
+.pedido-form select:focus {
+  border-color: #ff7b00;
+}
+
+.btn-registrar {
+  background: #ff7b00;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-registrar:hover {
+  background: #ff5900;
+  transform: scale(1.02);
+}
+
+/* ======= RESUMEN DE PRECIOS ======= */
+.resumen-precio {
+  background: #fff5e6;
+  padding: 10px 15px;
+  border-radius: 8px;
+  border-left: 4px solid #ff8a00;
+  font-size: 14px;
+}
+
+.resumen-precio .total {
+  color: #ff5900;
+  font-weight: bold;
+}
+
+/* ======= TARJETAS DE ESTADO ======= */
+.resumen-estados {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 25px 0;
+  justify-content: center;
+}
+
+.card-resumen {
+  flex: 1 1 calc(20% - 10px);
+  text-align: center;
+  padding: 10px;
+  border-radius: 10px;
+  font-weight: bold;
+  color: white;
+  font-size: 14px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.pendiente { background: #f8c102; color: #222; }
+.preparacion { background: #ff7b00; }
+.listo { background: #3ac47d; }
+.servido { background: #0078ff; }
+.entregado { background: #8e44ad; }
+
+/* ======= BARRA DE PROGRESO ======= */
+.barra-progreso-wrapper {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.texto-progreso {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.barra-progreso {
+  width: 100%;
+  height: 15px;
+  background: #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.progreso {
+  height: 100%;
+  border-radius: 8px;
+  transition: width 0.5s ease-in-out;
+}
+
+.progreso.baja { background-color: #f44336; }
+.progreso.media { background-color: #ffc107; }
+.progreso.alta { background-color: #4caf50; }
+
+/* ======= TABLA DE PEDIDOS ======= */
+.tabla-pedidos {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.tabla-pedidos th,
+.tabla-pedidos td {
+  text-align: center;
+  padding: 10px 8px;
+  border-bottom: 1px solid #eee;
+}
+
+.tabla-pedidos th {
+  background: #ff7b00;
+  color: white;
+  font-size: 15px;
+}
+
+.tabla-pedidos tr:hover {
+  background-color: #fff5e9;
+}
+
+/* ======= BADGES ======= */
+.badge {
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: white;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.badge-pendiente { background: #f8c102; color: #222; }
+.badge-preparacion { background: #ff7b00; }
+.badge-listo { background: #28a745; }
+.badge-servido { background: #007bff; }
+.badge-entregado { background: #8e44ad; }
+
+/* ======= BOTONES DE ACCIÓN ======= */
+.acciones-botones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.btn-accion {
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s ease;
+}
+
+.btn-accion.preparar { background: #ff9800; }
+.btn-accion.servir { background: #007bff; }
+.btn-accion.entregar { background: #28a745; }
+.btn-accion.eliminar { background: #e53935; }
+
+.btn-accion:hover:not(:disabled) {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+.btn-accion:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ======= MENSAJES ======= */
+.no-pedidos {
+  text-align: center;
+  color: #999;
+  font-style: italic;
+  padding: 15px;
+}
+
+/* ======= TOAST FLOTANTE ======= */
+.toast-flotante {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 12px 18px;
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+  z-index: 1000;
+  animation: fadeInOut 3s ease-in-out;
+}
+
+.toast-success {
+  background: #28a745;
+}
+
+.toast-error {
+  background: #e53935;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-15px); }
+  10%, 90% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-15px); }
+}

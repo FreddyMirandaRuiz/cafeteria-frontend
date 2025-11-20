@@ -1,0 +1,136 @@
+/* Fondo y centrado general */
+.resenas-container {
+  background-color: #f9f5f0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 80px;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Tarjeta contenedora */
+.resenas-card {
+  background: #fff;
+  padding: 30px;
+  border-radius: 15px;
+  width: 600px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Título principal */
+.titulo {
+  text-align: center;
+  color: #4b2e05;
+  font-size: 1.8rem;
+  margin-bottom: 25px;
+  font-weight: 700;
+}
+
+/* Reseñas */
+.resena-item {
+  background-color: #f5f0e8;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-left: 5px solid #c2a776;
+  transition: transform 0.3s ease;
+}
+
+.resena-item:hover {
+  transform: scale(1.02);
+}
+
+.resena-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #4b2e05;
+  font-weight: 600;
+}
+
+.estrellas {
+  color: #ffb400;
+  font-size: 1rem;
+}
+
+.comentario {
+  margin-top: 5px;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+/* Si no hay reseñas */
+.sin-resenas {
+  text-align: center;
+  color: #777;
+  background: #f5f0e8;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+/* Separador */
+.separador {
+  margin: 25px 0;
+  border-top: 2px dashed #c2a776;
+}
+
+/* Subtítulo del formulario */
+.subtitulo {
+  text-align: center;
+  color: #4b2e05;
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+}
+
+/* Formulario */
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form-control,
+.form-select {
+  border-radius: 8px;
+  border: 1px solid #c2a776;
+  padding: 10px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #8b4513;
+}
+
+/* Botón */
+.btn-enviar {
+  background-color: #8b4513;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  cursor: pointer;
+}
+
+.btn-enviar:hover {
+  background-color: #6e320c;
+  transform: scale(1.05);
+}
+
+/* Responsivo */
+@media (max-width: 600px) {
+  .resenas-card {
+    width: 90%;
+    padding: 20px;
+  }
+
+  .titulo {
+    font-size: 1.5rem;
+  }
+}

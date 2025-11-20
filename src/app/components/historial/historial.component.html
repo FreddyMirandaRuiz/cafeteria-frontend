@@ -1,0 +1,83 @@
+<div class="container mt-4">
+  <div class="card shadow-lg border-0 rounded-3">
+    <div class="card-header bg-primary bg-gradient text-white text-center py-3">
+      <h3 class="m-0">📜 Historial de Ventas</h3>
+    </div>
+
+    <div class="card-body p-4">
+
+      <!-- 🔍 Barra de búsqueda -->
+      <div class="mb-4 d-flex justify-content-between align-items-center">
+        <input type="text"
+               [(ngModel)]="busqueda"
+               (input)="filtrarVentas()"
+               class="form-control search-input search-medium  shadow-sm"
+               placeholder="🔍 Buscar por cliente o fecha...">
+        <span class="text-muted fst-italic small">Total ventas: {{ ventasFiltradas.length }}</span>
+      </div>
+
+      <div *ngIf="ventasFiltradas.length > 0; else sinVentas">
+        <div class="table-responsive">
+          <table class="table align-middle table-hover table-bordered">
+            <thead class="table-dark">
+              <tr>
+                <th>Cliente</th>
+                <th>Fecha</th>
+                <th>Total</th>
+                <th class="text-center">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let venta of ventasFiltradas" class="venta-row">
+                <td class="fw-semibold">{{ venta.cliente }}</td>
+                <td>{{ venta.fecha | date:'medium' }}</td>
+                <td class="text-success fw-bold">{{ venta.total | currency:'S/ ' }}</td>
+                <td class="text-center">
+                  <button class="btn btn-info btn-sm text-white" (click)="abrirDetalles(venta)">
+                    🧾 Ver Detalles
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <ng-template #sinVentas>
+        <div class="alert alert-info text-center m-0">
+          <strong>No hay ventas registradas.</strong> 📦
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>
+
+<!-- 🧾 Modal Detalles de Venta -->
+<div class="modal fade" id="modalDetallesVenta" tabindex="-1" aria-labelledby="modalDetallesVentaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="modalDetallesVentaLabel">🧾 Detalles de la Venta</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Cliente:</strong> {{ ventaSeleccionada?.cliente }}</p>
+        <p><strong>Fecha:</strong> {{ ventaSeleccionada?.fecha | date:'medium' }}</p>
+        <p><strong>Total:</strong> <span class="text-success fw-bold">{{ ventaSeleccionada?.total | currency:'S/ ' }}</span></p>
+        <hr>
+
+        <h6 class="fw-bold text-secondary mb-2">🛒 Productos vendidos:</h6>
+        <ul class="list-group">
+          <li *ngFor="let det of ventaSeleccionada?.detalles" class="list-group-item d-flex justify-content-between align-items-center">
+            <span>{{ det.producto.nombre }} (x{{ det.cantidad }})</span>
+            <span class="fw-semibold text-success">{{ calcularSubtotal(det) | currency:'S/ ' }}</span>
+          </li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+        <button class="btn btn-success" (click)="generarPDF()">📄 Descargar Comprobante</button>
+      </div>
+    </div>
+  </div>
+</div>
