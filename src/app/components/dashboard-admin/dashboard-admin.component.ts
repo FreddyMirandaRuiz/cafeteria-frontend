@@ -10,12 +10,14 @@ import { CocinaComponent } from '../cocina/cocina.component';
 import { UsuariosComponent } from '../usuarios/usuarios.component';
 import { HistorialPedidosComponent } from '../historial-pedidos/historial-pedidos.component';
 import { LoginComponent } from '../login/login.component';
+import { InicioComponent } from '../inicio/inicio.component';
 
 @Component({
   selector: 'app-dashboard-admin',
   standalone: true,
   imports: [
     CommonModule,
+	InicioComponent,
     ProductosComponent,
     VentasComponent,
     HistorialComponent,
@@ -41,18 +43,19 @@ export class DashboardAdminComponent {
 
   onLogin(user: Usuario) {
     this.usuario = user;
-    this.authService.guardarUsuario(user);
+    //this.authService.guardarUsuario(user);
     this.mostrarPorDefecto(user.rol);
   }
 
   mostrarPorDefecto(rol: string) {
-    switch (rol.toLowerCase()) {
-      case 'admin': this.mostrar = 'productos'; break;
-      case 'cajero': this.mostrar = 'ventas'; break;
-      case 'mesero': this.mostrar = 'pedidos'; break;
-      case 'cocina': this.mostrar = 'cocina'; break;
-      default: this.mostrar = ''; break;
-    }
+	this.mostrar = 'inicio';
+    //switch (rol.toLowerCase()) {
+      //case 'admin': this.mostrar = 'productos'; break;
+      //case 'cajero': this.mostrar = 'ventas'; break;
+      //case 'mesero': this.mostrar = 'pedidos'; break;
+      //case 'cocina': this.mostrar = 'cocina'; break;
+     // default: this.mostrar = ''; break;
+    //}
   }
 
   seleccionarModulo(modulo: string) {

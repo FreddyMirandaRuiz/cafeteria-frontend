@@ -11,6 +11,8 @@ import { HistorialPedidosComponent } from './components/historial-pedidos/histor
 import { authGuard } from './guards/auth.guard';
 import { clienteGuard } from './guards/cliente.guard';
 
+import { InicioComponent } from './components/inicio/inicio.component';
+
 // 👇 Importamos los nuevos componentes
 import { TiendaComponent } from './components/tienda/tienda.component';
 import { CarritoComponent } from './components/carrito/carrito.component';
@@ -34,6 +36,7 @@ export const routes: Routes = [
        { path: '', redirectTo: 'login', pathMatch: 'full' },
        { path: 'login', component: LoginComponent },
 	   { path: 'dashboard-admin', component: DashboardAdminComponent, canActivate: [authGuard] },
+	   { path: 'inicio', component: InicioComponent, canActivate: [authGuard] },
        { path: 'productos', component: ProductosComponent, canActivate: [authGuard] },
        { path: 'ventas', component: VentasComponent, canActivate: [authGuard] },
        { path: 'historial', component: HistorialComponent, canActivate: [authGuard] },

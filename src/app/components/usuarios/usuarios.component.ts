@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UsuarioService, Usuario } from '../../services/usuario.service';
@@ -13,60 +13,114 @@ declare var bootstrap: any;
   styleUrls: ['./usuarios.component.css']
 })
 export class UsuariosComponent implements OnInit {
-  usuarios: Usuario[] = [];
-  nuevoUsuario: Usuario = { nombre: '', usuario: '', password: '', rol: '' };
-  usuarioEdit: Usuario = { id: 0, nombre: '', usuario: '', password: '', rol: '' };
+  private usuarioService = inject(UsuarioService);
 
-  constructor(private usuarioService: UsuarioService) {}
+  usuarios: Usuario[] = [];
+  usuariosFiltrados: Usuario[] = [];
+  filtro: string = '';
+
+  nuevoUsuario: Usuario = this.resetUser();
+  usuarioEdit: Usuario = this.resetUser();
+  
+  cargando: boolean = false;
+
+  // --- CONTADOR DINÁMICO ---
+  get totalUsuarios(): number {
+    return this.usuarios.length;
+  }
 
   ngOnInit(): void {
     this.cargarUsuarios();
   }
 
+  private resetUser(): Usuario {
+    return { nombre: '', usuario: '', password: '', rol: '' };
+  }
+
   cargarUsuarios() {
+    this.cargando = true;
     this.usuarioService.listar().subscribe({
-      next: data => this.usuarios = data,
-      error: err => console.error(err)
+      next: data => {
+        this.usuarios = data;
+        this.aplicarFiltro();
+        this.cargando = false;
+      },
+      error: () => this.cargando = false
     });
   }
 
+  aplicarFiltro() {
+    const busqueda = this.filtro.toLowerCase().trim();
+    this.usuariosFiltrados = this.usuarios.filter(u => 
+      u.nombre.toLowerCase().includes(busqueda) || 
+      u.rol.toLowerCase().includes(busqueda)
+    );
+  }
+
+  // --- VALIDACIÓN DE FORMULARIO COMPLETO ---
+  formularioValido(): boolean {
+    return (
+      this.nuevoUsuario.nombre.trim().length > 0 &&
+      this.nuevoUsuario.usuario.trim().length > 0 &&
+      this.nuevoUsuario.password!.trim().length >= 4 && // Mínimo 4 caracteres
+      this.nuevoUsuario.rol !== ''
+    );
+  }
+
   registrar() {
+    if (!this.formularioValido()) return;
+
+    this.cargando = true;
     this.usuarioService.registrar(this.nuevoUsuario).subscribe({
       next: () => {
-        alert('✅ Usuario registrado con éxito');
-        this.nuevoUsuario = { nombre: '', usuario: '', password: '', rol: '' };
+        this.nuevoUsuario = this.resetUser();
         this.cargarUsuarios();
       },
-      error: () => alert('❌ Error al registrar usuario')
+      error: () => {
+        alert('❌ Error: El usuario ya existe o faltan datos');
+        this.cargando = false;
+      }
     });
   }
 
   eliminar(id: number) {
-    if (confirm('¿Seguro de eliminar este usuario?')) {
+    if (confirm('¿Realmente deseas eliminar este usuario?')) {
       this.usuarioService.eliminar(id).subscribe({
-        next: () => this.cargarUsuarios(),
-        error: err => console.error(err)
+        next: () => this.cargarUsuarios()
       });
     }
   }
 
-  // 🔹 Abrir modal con datos del usuario
   abrirModal(usuario: Usuario) {
-    this.usuarioEdit = { ...usuario }; // Clonamos el usuario
-    const modal = new bootstrap.Modal(document.getElementById('modalEditarUsuario'));
-    modal.show();
+    this.usuarioEdit = { ...usuario }; 
+    const modalElem = document.getElementById('modalEditarUsuario');
+    if (modalElem) {
+      const modalInstance = bootstrap.Modal.getOrCreateInstance(modalElem);
+      modalInstance.show();
+    }
   }
 
-  // 🔹 Guardar los cambios
   guardarCambios() {
+    // Validación básica para edición
+    if (!this.usuarioEdit.nombre.trim() || !this.usuarioEdit.usuario.trim()) {
+      alert('Campos obligatorios incompletos');
+      return;
+    }
+
     this.usuarioService.actualizarUsuario(this.usuarioEdit).subscribe({
       next: () => {
-        alert('✅ Usuario actualizado correctamente');
         this.cargarUsuarios();
-        const modal = bootstrap.Modal.getInstance(document.getElementById('modalEditarUsuario'));
-        modal.hide();
+        this.cerrarModal();
       },
-      error: () => alert('❌ Error al actualizar usuario')
+      error: () => alert('Error al actualizar')
     });
+  }
+
+  cerrarModal() {
+    const modalElem = document.getElementById('modalEditarUsuario');
+    if (modalElem) {
+      const modalInstance = bootstrap.Modal.getInstance(modalElem);
+      if (modalInstance) modalInstance.hide();
+    }
   }
 }

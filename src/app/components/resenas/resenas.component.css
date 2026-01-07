@@ -1,136 +1,111 @@
-/* Fondo y centrado general */
 .resenas-container {
-  background-color: #f9f5f0;
-  min-height: 100vh;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  padding-top: 80px;
-  font-family: 'Poppins', sans-serif;
-}
-
-/* Tarjeta contenedora */
-.resenas-card {
-  background: #fff;
   padding: 30px;
-  border-radius: 15px;
-  width: 600px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  background: #faf7f2;
 }
 
-/* Título principal */
-.titulo {
-  text-align: center;
-  color: #4b2e05;
-  font-size: 1.8rem;
-  margin-bottom: 25px;
-  font-weight: 700;
+.resenas-card {
+  width: 100%;
+  max-width: 700px;
+  background: #ffffff;
+  padding: 25px 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  animation: fadeIn 0.7s ease-in-out;
 }
 
-/* Reseñas */
+.titulo { font-size: 1.7rem; text-align: center; margin-bottom: 20px; color: #4e342e; font-weight: bold; }
+.subtitulo { margin-top: 20px; color: #5d4037; font-weight: bold; font-size: 1.2rem; }
+
 .resena-item {
-  background-color: #f5f0e8;
-  border-radius: 10px;
-  padding: 15px;
+  background: #fefaf6;
+  border-left: 4px solid #8d6e63;
+  padding: 12px;
   margin-bottom: 15px;
-  border-left: 5px solid #c2a776;
-  transition: transform 0.3s ease;
-}
-
-.resena-item:hover {
-  transform: scale(1.02);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  animation: slideDown 0.4s ease;
 }
 
 .resena-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  color: #4b2e05;
-  font-weight: 600;
+  gap: 10px;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #8d6e63;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.fecha {
+  font-size: 0.8rem;
+  color: #a1887f;
+  margin-left: auto;
 }
 
 .estrellas {
-  color: #ffb400;
-  font-size: 1rem;
-}
-
-.comentario {
-  margin-top: 5px;
-  color: #333;
-  font-size: 0.95rem;
-}
-
-/* Si no hay reseñas */
-.sin-resenas {
-  text-align: center;
-  color: #777;
-  background: #f5f0e8;
-  padding: 10px;
-  border-radius: 8px;
-}
-
-/* Separador */
-.separador {
-  margin: 25px 0;
-  border-top: 2px dashed #c2a776;
-}
-
-/* Subtítulo del formulario */
-.subtitulo {
-  text-align: center;
-  color: #4b2e05;
+  color: #ffb300;
   font-size: 1.2rem;
-  margin-bottom: 20px;
 }
 
-/* Formulario */
-.formulario {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
+.comentario { margin-top: 5px; color: #4e342e; }
 
-.form-control,
-.form-select {
-  border-radius: 8px;
-  border: 1px solid #c2a776;
-  padding: 10px;
-  font-size: 0.95rem;
-  outline: none;
-  transition: border-color 0.3s ease;
-}
+.sin-resenas { text-align: center; font-style: italic; color: #8d6e63; }
 
-.form-control:focus,
-.form-select:focus {
-  border-color: #8b4513;
-}
+.separador { margin: 25px 0; border: none; height: 1px; background: #e0d6cc; }
 
-/* Botón */
-.btn-enviar {
-  background-color: #8b4513;
-  color: white;
-  border: none;
+.formulario { display: flex; flex-direction: column; gap: 12px; }
+
+.form-control, .form-select {
   padding: 12px;
   border-radius: 8px;
+  border: 1px solid #c7b7a3;
+  background: #fffdf9;
   font-size: 1rem;
-  font-weight: 600;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  outline: none;
+  transition: border 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus { border-color: #8d6e63; }
+
+.btn-enviar {
+  background: #8d6e63;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
   cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
 }
 
-.btn-enviar:hover {
-  background-color: #6e320c;
-  transform: scale(1.05);
+.btn-enviar:hover { background: #795548; transform: scale(1.03); }
+.btn-enviar:active { transform: scale(0.97); }
+
+/* ===== RATING ESTRELLAS CLICKEABLES ===== */
+.rating span {
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: transform 0.2s, color 0.2s;
+  color: #ccc;
 }
 
-/* Responsivo */
-@media (max-width: 600px) {
-  .resenas-card {
-    width: 90%;
-    padding: 20px;
-  }
-
-  .titulo {
-    font-size: 1.5rem;
-  }
+.rating span:hover,
+.rating span.active {
+  color: #ffb300;
+  transform: scale(1.2);
 }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }

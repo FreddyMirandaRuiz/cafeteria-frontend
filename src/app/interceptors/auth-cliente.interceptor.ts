@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
   HttpInterceptor,
   HttpRequest,
@@ -12,20 +12,26 @@ import { Router } from '@angular/router';
 
 @Injectable()
 export class AuthClienteInterceptor implements HttpInterceptor {
-
-  constructor(private authCliente: AuthClienteService, private router: Router) {}
+  private authCliente = inject(AuthClienteService);
+  private router = inject(Router);
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const token = this.authCliente.obtenerToken();
+    // 1. Verificar si la URL es para el personal interno (Ignorar este interceptor)
+    if (req.url.includes('/api/auth/')) {
+      return next.handle(req);
+    }
 
+    // 2. Lógica para la Tienda Online
+    const token = this.authCliente.obtenerToken();
     const reqClonada = token ? req.clone({
       setHeaders: { Authorization: `Bearer ${token}` }
     }) : req;
 
     return next.handle(reqClonada).pipe(
       catchError((error: HttpErrorResponse) => {
-        if (error.status === 401) {
-          alert('⚠️ Tu sesión ha expirado. Inicia sesión nuevamente.');
+        // Solo redirigir al login-cliente si el error viene de una ruta de cliente
+        if (error.status === 401 && req.url.includes('/api/auth-cliente')) {
+          alert('⚠️ Tu sesión de cliente ha expirado.');
           this.authCliente.cerrarSesion();
           this.router.navigate(['/login-cliente']);
         }

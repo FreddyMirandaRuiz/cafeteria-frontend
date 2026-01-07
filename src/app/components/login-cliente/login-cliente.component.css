@@ -97,3 +97,14 @@
 .registro a:hover {
   color: #4b2e05;
 }
+
+.error small {
+  color: #ff4d4d;
+  font-size: 13px;
+  margin-top: 4px;
+  display: block;
+}
+.btn-login:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

@@ -6,6 +6,7 @@
     <input
       type="text"
       class="form-control buscador"
+      name="busqueda"
       [(ngModel)]="busqueda"
       (input)="filtrarProductos()"
       placeholder="🔍 Buscar producto por nombre o categoría"
@@ -15,21 +16,80 @@
   <!-- ➕ Formulario de nuevo producto -->
   <div class="card shadow-sm p-4 mb-4 border-0">
     <h4 class="text-secondary mb-3">➕ Agregar nuevo producto</h4>
-    <div class="form-grid">
-      <input [(ngModel)]="nuevoProducto.nombre" class="form-control" placeholder="Nombre" required>
-      <input type="number" [(ngModel)]="nuevoProducto.precio" class="form-control" placeholder="Precio" required>
-      <input type="number" [(ngModel)]="nuevoProducto.stock" class="form-control" placeholder="Stock" required>
-      <input [(ngModel)]="nuevoProducto.categoria" class="form-control" placeholder="Categoría" required>
-      <input [(ngModel)]="nuevoProducto.descripcion" class="form-control" placeholder="Descripción">
-      
-      <!-- Preview de imagen -->
-      <div class="preview-container mb-2" *ngIf="previewImagen">
-        <img [src]="previewImagen" alt="Preview" class="img-preview">
+
+    <form (ngSubmit)="guardarProducto()" class="form-grid">
+
+      <!-- Nombre -->
+      <div>
+        <label>Nombre del producto</label>
+        <input [(ngModel)]="nuevoProducto.nombre"
+               name="nombre"
+               class="form-control"
+               placeholder="Ingrese el nombre"
+               required>
       </div>
-      
-      <input type="file" (change)="onArchivoSeleccionado($event)" class="form-control mb-2">
-      <button class="btn btn-success w-100 mt-2" (click)="guardarProducto()">💾 Guardar Producto</button>
-    </div>
+
+      <!-- Precio -->
+      <div>
+        <label>Precio</label>
+        <input type="number" [(ngModel)]="nuevoProducto.precio"
+               name="precio"
+               class="form-control"
+               placeholder="Ingrese el precio"
+               required>
+      </div>
+
+      <!-- Stock -->
+      <div>
+        <label>Stock</label>
+        <input type="number" [(ngModel)]="nuevoProducto.stock"
+               name="stock"
+               class="form-control"
+               placeholder="Ingrese el stock"
+               required>
+      </div>
+
+      <!-- Categoría -->
+      <div>
+        <label>Categoría</label>
+        <input [(ngModel)]="nuevoProducto.categoria"
+               name="categoria"
+               class="form-control"
+               placeholder="Ingrese la categoría"
+               required>
+      </div>
+
+      <!-- Descripción -->
+      <div class="descripcion-container">
+        <label>Descripción</label>
+        <textarea [(ngModel)]="nuevoProducto.descripcion"
+                  name="descripcion"
+                  class="form-control"
+                  rows="2"
+                  placeholder="Ingrese una descripción"></textarea>
+      </div>
+
+      <!-- Imagen -->
+      <div>
+        <label>Imagen del producto</label>
+        <input type="file"
+               name="imagen"
+               (change)="onArchivoSeleccionado($event)"
+               class="form-control">
+      </div>
+
+      <!-- Preview -->
+      <div *ngIf="previewImagen" class="preview-container">
+        <label>Vista previa</label>
+        <img [src]="previewImagen" class="img-preview-small">
+      </div>
+
+      <!-- Botón -->
+      <button type="submit" class="btn-guardar">
+        💾 Guardar Producto
+      </button>
+
+    </form>
   </div>
 
   <!-- 🛍️ Catálogo -->
@@ -37,22 +97,24 @@
 
   <div *ngIf="productosFiltrados.length > 0; else sinProductos" class="catalogo">
     <div class="card producto-card shadow-sm" *ngFor="let prod of productosFiltrados">
+
       <img 
         [src]="prod.imagen ? 'http://localhost:8080/uploads/' + prod.imagen : 'https://via.placeholder.com/250x150?text=' + prod.nombre" 
-        alt="{{prod.nombre}}" 
-        class="card-img-top rounded-top"
-      >
+        alt="{{prod.nombre}}">
+
       <div class="card-body">
-        <h5 class="card-title fw-bold">{{ prod.nombre }}</h5>
-        <p class="mb-1"><strong>💲 Precio:</strong> {{ prod.precio | currency:'S/ ' }}</p>
-        <p class="mb-1"><strong>📦 Stock:</strong> {{ prod.stock }}</p>
-        <p class="mb-1"><strong>🏷️ Categoría:</strong> {{ prod.categoria }}</p>
+        <h5 class="titulo">{{ prod.nombre }}</h5>
+        <p class="precio">💲 {{ prod.precio | currency:'S/ ' }}</p>
+        <p><strong>📦 Stock:</strong> {{ prod.stock }}</p>
+        <p><strong>🏷️ Categoría:</strong> {{ prod.categoria }}</p>
         <p class="descripcion">{{ prod.descripcion }}</p>
       </div>
+
       <div class="card-footer d-flex justify-content-between">
         <button class="btn btn-outline-primary btn-sm w-50 me-1" (click)="abrirModal(prod)">✏️ Editar</button>
         <button class="btn btn-outline-danger btn-sm w-50" (click)="eliminarProducto(prod.id!)">🗑 Eliminar</button>
       </div>
+
     </div>
   </div>
 
@@ -68,6 +130,7 @@
 <div class="modal fade" id="modalEditarProducto" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content border-0 shadow-lg rounded-4">
+
       <div class="modal-header bg-primary text-white">
         <h5 class="modal-title">✏️ Modificar Producto</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
@@ -75,18 +138,55 @@
 
       <div class="modal-body">
         <div *ngIf="editarProducto" class="form-grid">
-          <input [(ngModel)]="editarProducto.nombre" class="form-control mb-2" placeholder="Nombre">
-          <input type="number" [(ngModel)]="editarProducto.precio" class="form-control mb-2" placeholder="Precio">
-          <input type="number" [(ngModel)]="editarProducto.stock" class="form-control mb-2" placeholder="Stock">
-          <input [(ngModel)]="editarProducto.categoria" class="form-control mb-2" placeholder="Categoría">
-          <input [(ngModel)]="editarProducto.descripcion" class="form-control mb-2" placeholder="Descripción">
 
-          <!-- Preview de imagen -->
-          <div class="preview-container mb-2" *ngIf="previewImagen">
-            <img [src]="previewImagen" alt="Preview" class="img-preview">
+          <div>
+            <label>Nombre</label>
+            <input [(ngModel)]="editarProducto.nombre"
+                   name="nombre"
+                   class="form-control">
           </div>
 
-          <input type="file" (change)="onArchivoSeleccionado($event)" class="form-control mb-2">
+          <div>
+            <label>Precio</label>
+            <input type="number" [(ngModel)]="editarProducto.precio"
+                   name="precio"
+                   class="form-control">
+          </div>
+
+          <div>
+            <label>Stock</label>
+            <input type="number" [(ngModel)]="editarProducto.stock"
+                   name="stock"
+                   class="form-control">
+          </div>
+
+          <div>
+            <label>Categoría</label>
+            <input [(ngModel)]="editarProducto.categoria"
+                   name="categoria"
+                   class="form-control">
+          </div>
+
+          <div class="descripcion-container">
+            <label>Descripción</label>
+            <textarea [(ngModel)]="editarProducto.descripcion"
+                      name="descripcion"
+                      class="form-control"
+                      rows="2"></textarea>
+          </div>
+
+          <div class="preview-container" *ngIf="previewImagen">
+            <label>Vista previa</label>
+            <img [src]="previewImagen" class="img-preview">
+          </div>
+
+          <div>
+            <label>Imagen</label>
+            <input type="file"
+                   (change)="onArchivoSeleccionado($event)"
+                   class="form-control">
+          </div>
+
         </div>
       </div>
 
@@ -94,6 +194,7 @@
         <button class="btn btn-secondary" data-bs-dismiss="modal">❌ Cancelar</button>
         <button class="btn btn-success" (click)="guardarModificacion()">💾 Guardar Cambios</button>
       </div>
+
     </div>
   </div>
 </div>

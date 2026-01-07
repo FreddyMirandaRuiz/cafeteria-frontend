@@ -19,7 +19,10 @@ export class ProductosComponent implements OnInit {
   productosFiltrados: Producto[] = [];
   busqueda: string = '';
 
-  nuevoProducto: Producto = { nombre: '', precio: 0, stock: 0, categoria: '', descripcion: '', imagen: '' };
+  nuevoProducto: Producto = {
+    nombre: '', precio: 0, stock: 0, categoria: '', descripcion: '', imagen: ''
+  };
+
   editarProducto: Producto | null = null;
 
   archivoSeleccionado: File | null = null;
@@ -31,6 +34,9 @@ export class ProductosComponent implements OnInit {
     this.cargarProductos();
   }
 
+  // =====================
+  // 1️⃣ LISTAR PRODUCTOS
+  // =====================
   cargarProductos() {
     this.productoService.listar().subscribe({
       next: data => {
@@ -41,29 +47,51 @@ export class ProductosComponent implements OnInit {
     });
   }
 
+  // =====================
+  // 2️⃣ FILTRAR PRODUCTOS
+  // =====================
   filtrarProductos() {
     const termino = this.busqueda.toLowerCase();
+
     this.productosFiltrados = this.productos.filter(p =>
       p.nombre.toLowerCase().includes(termino) ||
       p.categoria.toLowerCase().includes(termino)
     );
   }
 
+  // ============================================
+  // 3️⃣ SELECCIONAR IMAGEN + PREVIEW EN AMBOS FORM
+  // ============================================
   onArchivoSeleccionado(event: any) {
-    const file: File = event.target.files[0];
-    if (file) {
-      this.archivoSeleccionado = file;
-      const reader = new FileReader();
-      reader.onload = e => this.previewImagen = reader.result;
-      reader.readAsDataURL(file);
-    }
+    const file = event.target.files[0];
+    if (!file) return;
+
+    this.archivoSeleccionado = file;
+
+    const reader = new FileReader();
+    reader.onload = () => this.previewImagen = reader.result;
+    reader.readAsDataURL(file);
   }
 
+  // ============================================
+  // 🔒 VALIDACIONES REUTILIZABLES
+  // ============================================
+  validarProducto(prod: Producto): boolean {
+    if (!prod.nombre.trim()) return alert("El nombre es obligatorio"), false;
+    if (prod.precio <= 0) return alert("El precio debe ser mayor a 0"), false;
+    if (prod.stock < 0) return alert("El stock no puede ser negativo"), false;
+    if (!Number.isInteger(prod.stock)) return alert("El stock debe ser un número entero"), false;
+    if (!prod.categoria.trim()) return alert("La categoría es obligatoria"), false;
+
+    return true;
+  }
+
+  // ============================================
+  // 4️⃣ GUARDAR NUEVO PRODUCTO
+  // ============================================
   guardarProducto() {
-    if (!this.nuevoProducto.nombre.trim()) return alert('El nombre es obligatorio');
-	if (this.nuevoProducto.precio <= 0) return alert('El precio debe ser mayor a 0');
-	if (this.nuevoProducto.stock < 0) return alert('El stock no puede ser negativo');
-	if (!Number.isInteger(this.nuevoProducto.stock)) return alert('El stock debe ser un número entero mayor o igual a 0');
+
+    if (!this.validarProducto(this.nuevoProducto)) return;
 
     const formData = new FormData();
     formData.append('nombre', this.nuevoProducto.nombre);
@@ -71,14 +99,14 @@ export class ProductosComponent implements OnInit {
     formData.append('stock', this.nuevoProducto.stock.toString());
     formData.append('categoria', this.nuevoProducto.categoria);
     formData.append('descripcion', this.nuevoProducto.descripcion || '');
-    if (this.archivoSeleccionado) formData.append('imagen', this.archivoSeleccionado);
+
+    if (this.archivoSeleccionado)
+      formData.append('imagen', this.archivoSeleccionado);
 
     this.productoService.guardarConImagen(formData).subscribe({
       next: () => {
         alert('✅ Producto agregado correctamente');
-        this.nuevoProducto = { nombre: '', precio: 0, stock: 0, categoria: '', descripcion: '', imagen: '' };
-        this.archivoSeleccionado = null;
-        this.previewImagen = null;
+        this.reiniciarFormulario();
         this.cargarProductos();
       },
       error: err => {
@@ -88,22 +116,31 @@ export class ProductosComponent implements OnInit {
     });
   }
 
+  // Reseteo de form
+  reiniciarFormulario() {
+    this.nuevoProducto = { nombre: '', precio: 0, stock: 0, categoria: '', descripcion: '', imagen: '' };
+    this.archivoSeleccionado = null;
+    this.previewImagen = null;
+  }
+
+  // ============================================
+  // 5️⃣ ABRIR MODAL EDITAR
+  // ============================================
   abrirModal(prod: Producto) {
     this.editarProducto = { ...prod };
     this.previewImagen = prod.imagen ? `http://localhost:8080/uploads/${prod.imagen}` : null;
+
     const modal = new bootstrap.Modal(document.getElementById('modalEditarProducto'));
     modal.show();
   }
 
+  // ============================================
+  // 6️⃣ GUARDAR EDICIÓN
+  // ============================================
   guardarModificacion() {
     if (!this.editarProducto) return;
-	// Validaciones
-	if (!this.editarProducto.nombre.trim()) return alert('El nombre es obligatorio');
 
-	if (this.editarProducto.precio <= 0) return alert('El precio debe ser mayor a 0');
-
-	if (this.editarProducto.stock < 0) return alert('El stock no puede ser negativo');
-	if (!Number.isInteger(this.editarProducto.stock)) return alert('El stock debe ser un número entero mayor o igual a 0');
+    if (!this.validarProducto(this.editarProducto)) return;
 
     const formData = new FormData();
     formData.append('nombre', this.editarProducto.nombre);
@@ -111,14 +148,18 @@ export class ProductosComponent implements OnInit {
     formData.append('stock', this.editarProducto.stock.toString());
     formData.append('categoria', this.editarProducto.categoria);
     formData.append('descripcion', this.editarProducto.descripcion || '');
-    if (this.archivoSeleccionado) formData.append('imagen', this.archivoSeleccionado);
+
+    if (this.archivoSeleccionado)
+      formData.append('imagen', this.archivoSeleccionado);
 
     this.productoService.actualizarConImagen(this.editarProducto.id!, formData).subscribe({
       next: () => {
         alert('✅ Producto actualizado correctamente');
         this.cargarProductos();
+
         const modal = bootstrap.Modal.getInstance(document.getElementById('modalEditarProducto'));
         modal.hide();
+
         this.archivoSeleccionado = null;
         this.previewImagen = null;
       },
@@ -128,21 +169,22 @@ export class ProductosComponent implements OnInit {
       }
     });
   }
-  
-  eliminarProducto(id: number) {
-      if (confirm('¿Seguro que deseas eliminar este producto?')) {
-        this.productoService.eliminar(id).subscribe({
-          next: () => {
-            alert('🗑️ Producto eliminado');
-            this.cargarProductos();
-          },
-          error: err => {
-            console.error('Error al eliminar producto:', err);
-            alert('❌ Error al eliminar producto');
-          }
-        });
-      }
-    }
 
-  
+  // ============================================
+  // 7️⃣ ELIMINAR PRODUCTO
+  // ============================================
+  eliminarProducto(id: number) {
+    if (!confirm('¿Seguro que deseas eliminar este producto?')) return;
+
+    this.productoService.eliminar(id).subscribe({
+      next: () => {
+        alert('🗑️ Producto eliminado');
+        this.cargarProductos();
+      },
+      error: err => {
+        console.error('Error al eliminar producto:', err);
+        alert('❌ Error al eliminar producto');
+      }
+    });
+  }
 }

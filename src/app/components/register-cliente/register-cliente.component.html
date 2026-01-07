@@ -3,7 +3,9 @@
     <h2 class="titulo">🧾 Registro de Cliente</h2>
     <p class="subtexto">Crea tu cuenta para disfrutar de nuestros productos ☕</p>
 
-    <form (ngSubmit)="registrar()" class="formulario">
+    <form #formRegistro="ngForm" (ngSubmit)="registrar()" class="formulario">
+
+      <!-- NOMBRE -->
       <div class="campo">
         <label>Nombre</label>
         <input
@@ -13,9 +15,17 @@
           class="form-control"
           placeholder="Tu nombre completo"
           required
+          minlength="3"
+          #nombreCtrl="ngModel"
         />
+
+        <div class="error" *ngIf="nombreCtrl.invalid && nombreCtrl.touched">
+          <small *ngIf="nombreCtrl.errors?.['required']">⚠ El nombre es obligatorio</small>
+          <small *ngIf="nombreCtrl.errors?.['minlength']">⚠ Mínimo 3 caracteres</small>
+        </div>
       </div>
 
+      <!-- EMAIL -->
       <div class="campo">
         <label>Email</label>
         <input
@@ -25,27 +35,80 @@
           class="form-control"
           placeholder="ejemplo@correo.com"
           required
+          email
+          #emailCtrl="ngModel"
         />
+
+        <div class="error" *ngIf="emailCtrl.invalid && emailCtrl.touched">
+          <small *ngIf="emailCtrl.errors?.['required']">⚠ El email es obligatorio</small>
+          <small *ngIf="emailCtrl.errors?.['email']">⚠ Email inválido</small>
+        </div>
       </div>
 
+      <!-- PASSWORD -->
       <div class="campo">
         <label>Contraseña</label>
-        <input
-          [(ngModel)]="password"
-          name="password"
-          type="password"
-          class="form-control"
-          placeholder="••••••••"
-          required
-        />
+
+        <div class="password-wrapper">
+          <input
+            [(ngModel)]="password"
+            name="password"
+            [type]="verPassword ? 'text' : 'password'"
+            class="form-control"
+            placeholder="••••••••"
+            required
+            minlength="6"
+            #passwordCtrl="ngModel"
+          />
+          <span class="toggle-password" (click)="verPassword = !verPassword">
+            {{ verPassword ? '🙈' : '👁️' }}
+          </span>
+        </div>
+
+        <div class="error" *ngIf="passwordCtrl.invalid && passwordCtrl.touched">
+          <small *ngIf="passwordCtrl.errors?.['required']">⚠ Obligatorio</small>
+          <small *ngIf="passwordCtrl.errors?.['minlength']">⚠ Mínimo 6 caracteres</small>
+        </div>
       </div>
 
-      <button class="btn-registrar">Registrarse</button>
+      <!-- CONFIRMAR PASSWORD -->
+      <div class="campo">
+        <label>Confirmar contraseña</label>
+
+        <div class="password-wrapper">
+          <input
+            [(ngModel)]="confirmPassword"
+            name="confirmPassword"
+            [type]="verPassword2 ? 'text' : 'password'"
+            class="form-control"
+            placeholder="Repite la contraseña"
+            required
+            minlength="6"
+            #confirmCtrl="ngModel"
+          />
+          <span class="toggle-password" (click)="verPassword2 = !verPassword2">
+            {{ verPassword2 ? '🙈' : '👁️' }}
+          </span>
+        </div>
+
+        <div class="error" *ngIf="confirmCtrl.touched && confirmPassword !== password">
+          <small>⚠ Las contraseñas no coinciden</small>
+        </div>
+      </div>
+
+      <!-- BOTÓN -->
+      <button 
+        class="btn-registrar"
+        [disabled]="formRegistro.invalid || password !== confirmPassword"
+      >
+        Registrarse
+      </button>
 
       <p class="login-link">
-        ¿Ya tienes cuenta?  
+        ¿Ya tienes cuenta?
         <a routerLink="/login-cliente">Inicia sesión aquí</a>
       </p>
+
     </form>
   </div>
 </div>

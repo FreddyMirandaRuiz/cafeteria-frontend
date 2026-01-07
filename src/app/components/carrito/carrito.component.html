@@ -25,12 +25,21 @@
       <p class="vacio">🛒 Tu carrito está vacío. <br />¡Agrega tus productos favoritos ☕!</p>
     </ng-template>
 
-    <div class="total-section" *ngIf="carrito.length > 0">
-      <h4>Total: <span>{{ total | currency: 'USD' }}</span></h4>
-      <button class="btn-finalizar" (click)="realizarCompra()">
-        ✅ Finalizar compra
-      </button>
-    </div>
+	<div class="total-section" *ngIf="carrito.length > 0">
+	  
+	  <h4>Total: <span>{{ total | currency: 'USD' }}</span></h4>
+
+	  <div class="botones-compra">
+	    <button class="btn-cancelar" (click)="volverTienda()">
+	      ❌ Cancelar
+	    </button>
+
+	    <button class="btn-finalizar" (click)="realizarCompra()">
+	      ✅ Realizar compra
+	    </button>
+	  </div>
+
+	</div>
   </div>
 </div>
 
@@ -44,18 +53,73 @@
       </div>
       <div class="modal-body">
         <div class="d-grid gap-2">
-          <button class="btn btn-outline-success" (click)="seleccionarMetodo('tarjeta')">💳 Tarjeta</button>
-          <button class="btn btn-outline-primary" (click)="seleccionarMetodo('yape')">📱 Yape</button>
-          <button class="btn btn-outline-info" (click)="seleccionarMetodo('plin')">💠 Plin</button>
+          <button 
+		  class="btn btn-outline-success metodo-boton" 
+		  [ngClass]="{ 'tarjeta-activa': metodoPago === 'tarjeta' }"
+		  (click)="seleccionarMetodo('tarjeta')">💳 Tarjeta</button>
+		  
+          <button 
+		  class="btn btn-outline-primary metodo-boton" 
+		  [ngClass]="{ 'yape-activo': metodoPago === 'yape' }"
+		  (click)="seleccionarMetodo('yape')">📱 Yape</button>
+		  
+          <button 
+		  class="btn btn-outline-info metodo-boton" 
+		  [ngClass]="{ 'plin-activo': metodoPago === 'plin' }"
+		  (click)="seleccionarMetodo('plin')">💠 Plin</button>
+		  
         </div>
+		
+		<!-- 🔥 Mensaje de advertencia -->
+		<div class="alerta-metodo" *ngIf="metodoPago === ''">
+		  ⚠️ Selecciona un método de pago para continuar
+		</div>
 
-        <div *ngIf="metodoPago === 'tarjeta'" class="mt-3">
-          <h6>Datos de la tarjeta</h6>
-          <input class="form-control mb-2" placeholder="Número de tarjeta">
-          <input class="form-control mb-2" placeholder="Titular">
-          <input class="form-control mb-2" placeholder="Fecha de expiración (MM/AA)">
-          <input class="form-control mb-2" placeholder="CVV">
-        </div>
+		<div *ngIf="metodoPago === 'tarjeta'" class="mt-3" [formGroup]="formTarjeta">
+
+		  <h6>Datos de la tarjeta</h6>
+
+		  <!-- Número de tarjeta con icono dinámico -->
+		  <div class="input-group mb-2">
+		    <input 
+		      class="form-control"
+		      placeholder="Número de tarjeta"
+		      formControlName="numero"
+		      (input)="formatearNumero()"
+		    />
+		    <span class="input-group-text">
+		      <img *ngIf="iconoTarjeta" [src]="iconoTarjeta" width="30" />
+		    </span>
+		  </div>
+		  <small class="text-danger" *ngIf="error('numero')">Número inválido</small>
+
+		  <!-- Titular -->
+		  <input 
+		    class="form-control mb-2"
+		    placeholder="Titular"
+		    formControlName="titular"
+		  />
+		  <small class="text-danger" *ngIf="error('titular')">Ingresa el nombre</small>
+
+		  <!-- Expiración -->
+		  <input 
+		    class="form-control mb-2"
+		    placeholder="MM/AA"
+		    formControlName="expiracion"
+		    (input)="formatearExpiracion()"
+		  />
+		  <small class="text-danger" *ngIf="error('expiracion')">Fecha inválida o expirada</small>
+
+		  <!-- CVV -->
+		  <input 
+		    class="form-control mb-2"
+		    placeholder="CVV"
+		    formControlName="cvv"
+		    [maxlength]="maxCVV"
+		  />
+		  <small class="text-danger" *ngIf="error('cvv')">CVV inválido</small>
+
+		</div>
 
         <div *ngIf="metodoPago === 'yape'" class="mt-3 text-center">
           <h6>Escanea el QR de Yape 📱</h6>
@@ -69,7 +133,12 @@
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button class="btn btn-success" (click)="confirmarPago()">Finalizar compra ✅</button>
+        <button class="btn btn-success" 
+		(click)="confirmarPago()"
+		[disabled]="
+		metodoPago === '' || 
+		(metodoPago==='tarjeta' && formTarjeta.invalid)"
+		>Finalizar compra ✅</button>
       </div>
     </div>
   </div>

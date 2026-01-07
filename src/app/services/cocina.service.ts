@@ -1,75 +1,91 @@
 import { Injectable } from '@angular/core';
-import SockJS from 'sockjs-client/dist/sockjs';
-import * as Stomp from '@stomp/stompjs';
 import { Pedido } from './pedido.service';
+import  SockJS from 'sockjs-client';
+import * as Stomp from 'stompjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CocinaService {
-  private stompClient: any = null;
+  private stompClient: any;
   private conectado = false;
 
-  conectar(onMensaje: (pedido: Pedido | string) => void) {
-    if (this.conectado) {
-      console.warn('⚠️ Ya estás conectado al canal de cocina');
-      return;
-    }
+  /**
+   * 📡 Inicia la conexión con el servidor
+   * @param onMensaje Callback que se ejecuta cuando llega un cambio en los pedidos
+   */
+  conectar(onMensaje: (pedido: Pedido) => void) {
+    if (this.conectado) return;
 
+    // 1. Apuntamos al endpoint que definiste en el Backend
     const socket = new SockJS('http://localhost:8080/ws-cafeteria');
     this.stompClient = Stomp.over(socket);
 
+    // Opcional: Desactivar los logs constantes de STOMP en la consola
+    this.stompClient.debug = () => {};
+
+    // 2. Intentar la conexión
     this.stompClient.connect({}, (frame: any) => {
       this.conectado = true;
-      console.log('✅ Conectado al canal de cocina');
+      console.log('✅ ¡CONECTADO AL SISTEMA DE COCINA REAL-TIME!');
 
-      // Escucha de mensajes del backend
-      this.stompClient?.subscribe('/topic/cocina', (mensaje: any) => {
-        try {
-          const data = JSON.parse(mensaje.body);
-          onMensaje(data);
-        } catch {
-          onMensaje(mensaje.body);
+      // 3. Suscribirse al canal donde el mozo y la cocina escuchan cambios
+      this.stompClient.subscribe('/topic/pedidos', (mensaje: any) => {
+        if (mensaje.body) {
+          const pedidoActualizado: Pedido = JSON.parse(mensaje.body);
+          onMensaje(pedidoActualizado);
         }
       });
     }, (error: any) => {
-      console.error('❌ Error al conectar con el servidor WebSocket:', error);
+      console.error('❌ Error en la conexión WebSocket:', error);
       this.conectado = false;
-
-      // Intento de reconexión automática tras 5 segundos
-      setTimeout(() => {
-        console.log('🔄 Reintentando conexión con el canal de cocina...');
-        this.conectar(onMensaje);
-      }, 5000);
+      // Reintento automático cada 5 segundos si se cae el servidor
+      setTimeout(() => this.conectar(onMensaje), 5000);
     });
   }
 
   /**
-   * ✅ Envía una notificación al backend cuando un pedido es servido
+   * 🔥 Acción del Chef: El pedido entra a la olla.
+   */
+  notificarPreparando(pedido: Pedido) {
+    this.enviarMensaje('/app/preparar-pedido', pedido);
+  }
+
+  /**
+   * 🔔 Acción del Chef: El plato está listo en la barra.
+   */
+  notificarListo(pedido: Pedido) {
+    this.enviarMensaje('/app/pedido-listo', pedido);
+  }
+
+  /**
+   * 🍽️ Acción del Mozo: El cliente ya tiene su comida.
    */
   notificarPedidoServido(pedido: Pedido) {
-    if (!pedido.id) return;
+    this.enviarMensaje('/app/pedido-servido', pedido);
+  }
 
-    const mensaje = { id: pedido.id, estado: 'SERVIDO' };
-
+  /**
+   * 🛠️ Método privado para enviar datos de forma segura
+   */
+  private enviarMensaje(destino: string, data: Pedido) {
     if (this.stompClient && this.stompClient.connected) {
-      this.stompClient.send('/app/pedido-servido', {}, JSON.stringify(mensaje));
-      console.log(`🍽️ Pedido servido notificado al backend (ID: ${pedido.id})`);
+      this.stompClient.send(destino, {}, JSON.stringify(data));
+      console.log(`📤 Mensaje enviado a ${destino} para Mesa: ${data.mesa}`);
     } else {
-      console.warn('⚠️ WebSocket no está conectado, no se pudo notificar el pedido servido.');
+      console.error('⚠️ No se pudo enviar el mensaje. El socket no está conectado.');
     }
   }
 
+  /**
+   * Cierra la conexión al salir de la app
+   */
   desconectar() {
-    if (this.stompClient && this.stompClient.connected) {
+    if (this.stompClient) {
       this.stompClient.disconnect(() => {
-        console.log('❌ Desconectado del canal de cocina');
         this.conectado = false;
+        console.log('🔌 WebSocket desconectado.');
       });
     }
-  }
-
-  isConectado(): boolean {
-    return this.conectado;
   }
 }

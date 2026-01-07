@@ -4,6 +4,7 @@ import { ResenaService } from '../../services/resena.service';
 import { AuthClienteService } from '../../services/auth-cliente.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-resenas',
@@ -29,15 +30,21 @@ export class ResenasComponent implements OnInit {
     this.productoId = +this.route.snapshot.paramMap.get('id')!;
     this.listarResenas();
 
-    // Si el cliente está logueado, obtener su nombre
     this.nombreCliente = this.authCliente.obtenerNombre() || 'Anónimo';
   }
 
   listarResenas() {
     this.resenaService.listarPorProducto(this.productoId).subscribe({
-      next: (data) => (this.resenas = data),
+      next: (data) => {
+        // Ordenar de más recientes a más antiguos
+        this.resenas = data.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
+      },
       error: (err) => console.error('Error al cargar reseñas', err)
     });
+  }
+
+  seleccionarCalificacion(valor: number) {
+    this.calificacion = valor;
   }
 
   agregarResena() {
@@ -50,6 +57,7 @@ export class ResenasComponent implements OnInit {
       nombreCliente: this.nombreCliente,
       comentario: this.comentario,
       calificacion: this.calificacion,
+      fecha: new Date().toISOString(),
       producto: { id: this.productoId }
     };
 
@@ -62,5 +70,9 @@ export class ResenasComponent implements OnInit {
       },
       error: (err) => console.error('Error al guardar reseña', err)
     });
+  }
+
+  obtenerIniciales(nombre: string) {
+    return nombre.split(' ').map(n => n[0]).join('').toUpperCase();
   }
 }

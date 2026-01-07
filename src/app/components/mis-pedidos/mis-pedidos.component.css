@@ -1,77 +1,232 @@
-.container {
-  animation: fadeIn 0.5s ease-in-out;
+/* Contenedor general */
+.mis-pedidos-container {
+  font-family: 'Poppins', sans-serif;
+  padding-bottom: 40px;
 }
 
+/* Header / Controls */
+.controls {
+  min-width: 320px;
+  gap: 10px;
+}
+
+.search-wrap {
+  width: 220px;
+}
+
+.search-input {
+  border-radius: 22px;
+  padding: 10px 14px;
+}
+
+/* Cards */
 .pedido-card {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  animation: cardIn 0.45s forwards;
+  opacity: 0;
+}
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(10px) scale(0.995); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .pedido-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  transform: translateY(-6px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
 }
 
+/* Header */
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 8px;
 }
 
+/* Estado badges */
+.estado-badge {
+  padding: 6px 10px;
+  border-radius: 14px;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.badge-procesando {
+  background: linear-gradient(135deg, #ffe8a8, #ffd166);
+  color: #7a5e00;
+  box-shadow: 0 4px 12px rgba(255, 209, 102, 0.2);
+}
+
+.badge-encamino {
+  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+  color: #0f172a;
+  box-shadow: 0 4px 12px rgba(66, 153, 225, 0.12);
+}
+
+.badge-entregado {
+  background: linear-gradient(135deg, #d1f7dc, #a7f3d0);
+  color: #064e3b;
+  box-shadow: 0 4px 12px rgba(72, 187, 120, 0.12);
+}
+
+/* Lista de productos */
 .list-group-item {
   border: none;
-  padding: 0.6rem 0;
+  padding: 8px 0;
   font-size: 0.95rem;
 }
 
-.btn-outline-primary {
-  border-radius: 20px;
+.nombre-producto {
   font-weight: 600;
-  transition: all 0.2s ease;
 }
 
-.btn-outline-primary:hover {
-  background-color: #0d6efd;
-  color: white;
+/* Footer */
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
+/* Botón PDF y efectos */
 .btn-pdf {
   position: relative;
   overflow: hidden;
-  transition: all 0.3s ease;
-  font-weight: 500;
+  border-radius: 16px;
+  padding: 6px 12px;
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
-
 .btn-pdf:hover {
   background-color: #0d6efd;
   color: white;
-  transform: scale(1.05);
+  box-shadow: 0 6px 18px rgba(13,110,253,0.18);
 }
+.btn-pdf:active { transform: scale(0.97); }
 
-.btn-pdf:active {
-  transform: scale(0.95);
-}
-
-/* ✨ efecto de onda */
+/* Ripple al click (solo activo) */
 .btn-pdf::after {
   content: '';
   position: absolute;
   width: 20px;
   height: 20px;
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(255,255,255,0.35);
   border-radius: 50%;
   transform: scale(0);
-  animation: ripple 0.6s linear;
   pointer-events: none;
 }
+.btn-pdf:active::after { animation: ripple 0.6s linear; }
+@keyframes ripple { to { transform: scale(8); opacity: 0; } }
 
-@keyframes ripple {
-  to {
-    transform: scale(8);
-    opacity: 0;
+/* Small responsive tweaks */
+@media (max-width: 768px) {
+  .controls { min-width: auto; width: 100%; gap: 8px; }
+  .search-wrap { width: 100%; }
+  .card-footer { flex-direction: column; align-items: flex-start; gap: 8px; }
+}
+/* Animación suave de entrada */
+.fade-card {
+  opacity: 0;
+  animation: aparecer 0.6s ease forwards;
+}
+
+@keyframes aparecer {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Badges de estados */
+.estado-procesando {
+  background-color: #ffc107;
+  color: #000;
+}
+
+.estado-camino {
+  background-color: #17a2b8;
+}
+
+.estado-entregado {
+  background-color: #28a745;
+}
+
+/* Botón PDF */
+.btn-pdf:hover {
+  background: #0d6efd !important;
+  color: white !important;
+}
+
+/* Botón email */
+.btn-mail:hover {
+  background: #6c757d !important;
+  color: white !important;
+}
+
+/* Tarjeta hover */
+.pedido-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+  transition: 0.2s;
+}
+
+/* Contenedor de filtros */
+.filtros {
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+}
+
+/* Inputs y selects dentro de los filtros */
+.filtros select,
+.filtros input[type="text"],
+.filtros input[type="date"] {
+  border-radius: 12px;
+  padding: 10px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Focus elegante */
+.filtros select:focus,
+.filtros input:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.25);
+}
+
+/* Ajustes del bloque Rango de fechas */
+.filtros .col-md-4 {
+  margin-top: 10px;
+}
+
+/* Para que el label del rango se vea mejor */
+.filtros label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+/* Alinear correctamente los selects del bloque de filtros */
+.filtros .form-select {
+  min-height: 42px;
+}
+
+/* Que el bloque de filtros no se rompa en pantallas pequeñas */
+@media (max-width: 768px) {
+  .filtros .col-md-3,
+  .filtros .col-md-4,
+  .filtros .col-md-2 {
+    width: 100%;
   }
+}
+
+/* Animación suave al aparecer los inputs del rango */
+.filtros input[type="date"] {
+  animation: fadeInput 0.3s ease;
+}
+
+@keyframes fadeInput {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
 }

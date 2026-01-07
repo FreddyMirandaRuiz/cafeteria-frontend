@@ -1,40 +1,139 @@
 <div class="container py-4">
   <h2 class="text-center mb-4 fw-bold">📦 Mis Pedidos</h2>
 
-  <div *ngIf="pedidos.length === 0" class="text-center mt-5">
+  <!-- MENSAJE SI NO HAY PEDIDOS -->
+  <div *ngIf="pedidosFiltrados.length === 0" class="text-center mt-5 fade-in">
     <img src="https://cdn-icons-png.flaticon.com/512/2038/2038854.png" width="120" class="mb-3 opacity-75">
     <h5>No tienes pedidos registrados todavía 😔</h5>
     <p>¡Visita la <a routerLink="/tienda" class="text-decoration-none fw-semibold text-primary">tienda</a> y realiza tu primera compra!</p>
   </div>
 
-  <div class="row" *ngIf="pedidos.length > 0">
-    <div *ngFor="let pedido of pedidos" class="col-md-6 col-lg-4 mb-4">
+  <!-- FILTROS -->
+  <div class="filtros card shadow-sm p-3 mb-4">
+    <div class="row g-3">
+
+      <!-- Buscador -->
+      <div class="col-md-4">
+        <input type="text" class="form-control" placeholder="🔍 Buscar producto..."
+               [(ngModel)]="busqueda" (input)="aplicarFiltros()">
+      </div>
+
+      <!-- Filtro fechas -->
+      <div class="col-md-3">
+        <select class="form-select" [(ngModel)]="filtroFecha" (change)="aplicarFiltros()">
+          <option value="">📅 Fecha: Todas</option>
+          <option value="hoy">Hoy</option>
+		  <option value="ayer">Ayer</option>
+          <option value="semana">Últimos 7 días</option>
+		  <option value="mes">Este mes</option>
+		  <option value="anio">Este año</option>
+		  <option value="rango">Rango de fechas</option>
+        </select>
+		
+		<div class="col-md-4" *ngIf="filtroFecha === 'rango'">
+		  <label class="form-label">Desde:</label>
+		  <input type="date" class="form-control" [(ngModel)]="fechaDesde" (change)="aplicarFiltros()">
+		</div>
+
+		<div class="col-md-4" *ngIf="filtroFecha === 'rango'">
+		  <label class="form-label">Hasta:</label>
+		  <input type="date" class="form-control" [(ngModel)]="fechaHasta" (change)="aplicarFiltros()">
+		</div>
+      </div>
+
+      <!-- Filtro monto -->
+      <div class="col-md-3">
+        <select class="form-select" [(ngModel)]="filtroMonto" (change)="aplicarFiltros()">
+          <option value="">💵 Monto: Todos</option>
+          <option value="bajo">Menos de S/ 20</option>
+          <option value="medio">S/ 20 - S/ 50</option>
+          <option value="alto">Más de S/ 50</option>
+        </select>
+      </div>
+
+      <!-- Ordenar -->
+      <div class="col-md-2">
+        <select class="form-select" [(ngModel)]="orden" (change)="aplicarFiltros()">
+          <option value="recientes">↕ Más recientes</option>
+          <option value="antiguos">Más antiguos</option>
+        </select>
+      </div>
+	  
+	  <!-- Filtro Estado -->
+	  <div class="col-md-3">
+	    <select class="form-select" [(ngModel)]="filtroEstado" (change)="aplicarFiltros()">
+	      <option value="">📌 Estado: Todos</option>
+	      <option value="Procesando">Procesando</option>
+	      <option value="En camino">En camino</option>
+	      <option value="Entregado">Entregado</option>
+	    </select>
+	  </div>
+
+    </div>
+  </div>
+
+  <!-- LISTA DE PEDIDOS -->
+  <div class="row">
+    <div *ngFor="let pedido of pedidosFiltrados" 
+         class="col-md-6 col-lg-4 mb-4 fade-card"
+         [ngStyle]="{ 'animation-delay': pedido.delay + 'ms' }">
+
       <div class="card shadow-sm border-0 rounded-4 h-100 pedido-card">
+
+        <!-- CABECERA DEL PEDIDO -->
         <div class="card-header bg-primary text-white rounded-top-4">
-          <h6 class="mb-0 fw-bold">Orden #{{ pedido.id }}</h6>
-          <small>{{ pedido.fecha | date:'mediumDate' }}</small>
+          <div>
+            <h6 class="mb-0 fw-bold">Orden #{{ pedido.id }}</h6>
+            <small>{{ pedido.fecha | date:'mediumDate' }}</small>
+          </div>
+
+          <span class="badge rounded-pill px-3 py-2 ms-2"
+                [ngClass]="{
+                  'estado-procesando': pedido.estado === 'Procesando',
+                  'estado-camino': pedido.estado === 'En camino',
+                  'estado-entregado': pedido.estado === 'Entregado'
+                }">
+            ● {{ pedido.estado }}
+          </span>
         </div>
 
+        <!-- DETALLES -->
         <div class="card-body">
-          <p class="mb-2"><strong>Cliente:</strong> {{ pedido.cliente }}</p>
-          <p class="mb-2"><strong>Total:</strong> <span class="text-success fw-bold">{{ pedido.total | currency:'USD' }}</span></p>
+          <p class="mb-1"><strong>Cliente:</strong> {{ pedido.cliente }}</p>
+          <p class="mb-1"><strong>Método de pago:</strong> {{ pedido.metodoPago }}</p>
+          <p class="mb-2"><strong>Total:</strong> 
+            <span class="text-success fw-bold">{{ pedido.total | currency:'USD' }}</span>
+          </p>
 
           <hr>
           <h6 class="fw-bold text-secondary mb-3">🛒 Detalles:</h6>
 
           <ul class="list-group list-group-flush">
-            <li *ngFor="let d of pedido.detalles" class="list-group-item d-flex justify-content-between align-items-center">
+            <li *ngFor="let d of pedido.detalles" 
+                class="list-group-item d-flex justify-content-between align-items-center">
               <span>{{ d.nombreProducto }} <small class="text-muted">x{{ d.cantidad }}</small></span>
               <span class="fw-semibold">{{ d.precio | currency:'USD' }}</span>
             </li>
           </ul>
         </div>
 
-        <div class="card-footer text-end bg-light rounded-bottom-4">
-          <button class="btn btn-outline-primary btn-sm btn-pdf"(click)="generarPDF(pedido)">
+        <!-- BOTONES -->
+        <div class="card-footer d-flex justify-content-between bg-light rounded-bottom-4">
+
+          <!-- Ver PDF -->
+          <button class="btn btn-outline-primary btn-sm btn-pdf"
+                  (click)="generarPDF(pedido)">
             📄 Ver comprobante
           </button>
+
+          <!-- Enviar PDF -->
+          <button class="btn btn-outline-secondary btn-sm btn-mail"
+                  (click)="enviarComprobante(pedido)">
+            ✉ Enviar por correo
+          </button>
+
         </div>
+
       </div>
     </div>
   </div>

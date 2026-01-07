@@ -15,6 +15,7 @@
   padding: 40px;
   border-radius: 15px;
   width: 800px;
+  max-width: 95%;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
@@ -103,6 +104,62 @@
   transform: scale(1.05);
 }
 
+/* Input dentro de grupo (tarjeta + icono) */
+.input-group .form-control {
+  border-radius: 8px 0 0 8px !important;
+}
+
+.input-group-text {
+  background-color: #fff;
+  border-radius: 0 8px 8px 0 !important;
+  border-left: none;
+}
+
+/* Icono de tarjeta */
+.input-group-text img {
+  filter: drop-shadow(0 0 2px rgba(0,0,0,0.3));
+}
+
+/* Mantener inputs bonitos */
+.form-control {
+  border-radius: 8px !important;
+}
+
+/* Mensajes de error */
+.text-danger {
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+/* Botón deshabilitado */
+button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Animación para inputs con error */
+input.ng-invalid.ng-touched {
+  border: 1px solid #ff2d2d !important;
+  animation: shake 0.2s ease-in-out 2;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  50% { transform: translateX(3px); }
+  75% { transform: translateX(-3px); }
+  100% { transform: translateX(0); }
+}
+
+/* Modal personalizado */
+.modal-content {
+  border-radius: 15px;
+}
+
+.modal-header {
+  border-radius: 15px 15px 0 0;
+}
+
 /* Responsivo */
 @media (max-width: 768px) {
   .carrito-card {
@@ -120,4 +177,106 @@
     flex-direction: column;
     gap: 15px;
   }
+}
+
+.alerta-metodo {
+  margin-top: 15px;
+  text-align: center;
+  background: #fff3cd;
+  color: #856404;
+  padding: 10px 15px;
+  border-radius: 8px;
+  border: 1px solid #ffeeba;
+  font-size: 0.95rem;
+  animation: aparecer 0.3s ease-in-out;
+}
+
+@keyframes aparecer {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* ANIMACIÓN GENERAL */
+.metodo-boton {
+  transition: all 0.25s ease-in-out;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* ===========================
+   TARJETA (VERDE)
+=========================== */
+.tarjeta-activa {
+  border: 2px solid #28a745 !important;
+  background-color: #e8ffe8 !important;
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(40, 167, 69, 0.6);
+  animation: pulse 0.4s ease-in-out;
+}
+
+/* ===========================
+   YAPE (MORADO/AZUL)
+=========================== */
+.yape-activo {
+  border: 2px solid #6f42c1 !important;
+  background-color: #f3e6ff !important;
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(111, 66, 193, 0.6);
+  animation: pulse 0.4s ease-in-out;
+}
+
+/* ===========================
+   PLIN (CELESTE)
+=========================== */
+.plin-activo {
+  border: 2px solid #0dcaf0 !important;
+  background-color: #e6faff !important;
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(13, 202, 240, 0.6);
+  animation: pulse 0.4s ease-in-out;
+}
+
+/* ANIMACIÓN */
+@keyframes pulse {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.07); }
+  100% { transform: scale(1); }
+}
+
+/* Contenedor de botones */
+.botones-compra {
+  display: flex;
+  gap: 15px;
+}
+
+/* Botón CANCELAR estilo premium */
+.btn-cancelar {
+  background-color: #d9534f; /* rojo elegante */
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 10px rgba(217, 83, 79, 0.3);
+  transition: 
+    background-color 0.3s ease,
+    transform 0.2s ease,
+    box-shadow 0.3s ease;
+}
+
+/* Hover animado */
+.btn-cancelar:hover {
+  background-color: #c9302c; /* rojo más intenso */
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 6px 15px rgba(217, 83, 79, 0.45);
+}
+
+/* Pequeña animación al presionar */
+.btn-cancelar:active {
+  transform: scale(0.95);
 }

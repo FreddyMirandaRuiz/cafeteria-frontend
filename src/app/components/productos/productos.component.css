@@ -1,38 +1,184 @@
+/* ===== CONTENEDOR GENERAL ===== */
 .productos-container {
   max-width: 1200px;
+  margin: 0 auto;
+  background: rgb(253, 255, 244);
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* ===== GRID DEL FORMULARIO ===== */
 .form-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 15px;
+  background: rgb(255, 242, 251);
+  padding: 20px;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
-.catalogo {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
+/* Labels */
+.form-grid label {
+  font-weight: 600;
+  margin-bottom: 5px;
+  display: block;
+  color: #444;
 }
 
-.producto-card {
-  transition: transform 0.2s;
+/* Inputs */
+.form-grid input,
+.form-grid select,
+.form-grid textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.2s;
 }
 
-.producto-card:hover {
-  transform: translateY(-5px);
+.form-grid input:focus,
+.form-grid select:focus,
+.form-grid textarea:focus {
+  border-color: #0078d7;
+  outline: none;
 }
 
-.descripcion {
-  min-height: 40px;
+/* Área descripción */
+.descripcion-container textarea {
+  min-height: 65px;
+  resize: vertical;
 }
 
+/* ===== BOTÓN GUARDAR ===== */
+.btn-guardar {
+  grid-column: 1 / -1;
+  padding: 12px;
+  background-color: #0078d7;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-guardar:hover {
+  background-color: #005fa3;
+  transform: scale(1.02);
+}
+
+/* ===== PREVIEW DE IMAGEN ===== */
 .preview-container {
   text-align: center;
 }
 
 .img-preview {
   max-width: 100%;
-  max-height: 150px;
-  border-radius: 8px;
-  object-fit: contain;
+  max-height: 180px;
+  border-radius: 10px;
+  object-fit: cover;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+}
+
+.img-preview-small {
+  width: 150px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* ===== BARRA DE BÚSQUEDA ===== */
+.buscador {
+  max-width: 380px;
+  border-radius: 10px;
+}
+
+/* ===== CATÁLOGO ===== */
+.catalogo {
+  margin-top: 25px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+/* ===== TARJETA DEL PRODUCTO ===== */
+.producto-card {
+  background: #fff;
+  padding: 0;
+  border-radius: 14px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.producto-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+}
+
+/* Imagen */
+.producto-card img {
+  width: 100%;
+  height: 170px;
+  object-fit: cover;
+}
+
+/* Texto */
+.producto-card .titulo {
+  font-weight: 700;
+  font-size: 18px;
+  margin-bottom: 6px;
+}
+
+.producto-card .precio {
+  font-weight: 600;
+  font-size: 16px;
+  color: #0078d7;
+  margin-bottom: 10px;
+}
+
+.producto-card .descripcion {
+  font-size: 14px;
+  color: #555;
+  min-height: 50px;
+}
+
+/* ===== MODAL ===== */
+.modal-content {
+  border-radius: 16px !important;
+}
+
+.modal-header {
+  border-top-left-radius: 16px !important;
+  border-top-right-radius: 16px !important;
+}
+
+.modal-body .form-grid {
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .catalogo {
+    grid-template-columns: 1fr;
+  }
+
+  .btn-guardar {
+    font-size: 14px;
+  }
+
+  .buscador {
+    width: 100%;
+  }
 }

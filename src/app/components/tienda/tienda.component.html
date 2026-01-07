@@ -1,61 +1,67 @@
 <!-- 🌟 NAVBAR -->
 <nav class="navbar">
   <div class="navbar-logo">
-    <img src="https://cdn-icons-png.flaticon.com/512/924/924514.png" class="logo-img"/>
+    <img src="https://cdn-icons-png.flaticon.com/512/924/924514.png"  class="logo-img" />
     <span class="nombre-cafe">Café Delicias Peruanas</span>
-  </div>  
+  </div>
 
   <div class="navbar-actions">
-    <button class="btn-carrito" [routerLink]="['/carrito']">🛒 Carrito</button>
-	<button class="btn-mis-pedidos" [routerLink]="['/mis-pedidos']"> 📦 Mis pedidos </button>
-	<button class="btn-contacto" (click)="abrirModal()">📞 Contacto</button>
+    <button class="btn-carrito" [routerLink]="['/carrito']">
+		🛒 Carrito
+	</button>
+    <button class="btn-mis-pedidos" [routerLink]="['/mis-pedidos']">📦 Mis pedidos</button>
+    <button class="btn-contacto" (click)="abrirModal()">📞 Contacto</button>
   </div>
 </nav>
 
-<!-- 🔍 BUSCADOR DE PRODUCTOS -->
+<!-- 🔍 BUSCADOR -->
 <div class="buscador-container">
   <input
     type="text"
     placeholder="Buscar productos..."
     [(ngModel)]="filtro"
+    (input)="currentPage = 1"
     class="barra-busqueda"
   />
 </div>
 
-<!-- 🌐 MODAL DE CONTACTO -->
+<!-- 🌐 MODAL CONTACTO -->
 <div class="modal-backdrop" *ngIf="modalVisible" (click)="cerrarModal()">
   <div class="modal-content" (click)="$event.stopPropagation()">
     <h4>Contáctanos</h4>
+
+    <p>Escríbenos en nuestras redes o por WhatsApp y te atenderemos 😊</p>
+
     <ul class="redes">
       <li>
-        <a href="https://wa.me/519XXXXXXXX" target="_blank">
-          <i class="fab fa-whatsapp fa-2x text-success"></i>
+        <a href="https://wa.me/519XXXXXXXX" target="_blank" rel="noopener">
+          <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg" alt="whatsapp" style="width:28px;height:28px"/>
         </a>
       </li>
       <li>
-        <a href="https://instagram.com/tuusuario" target="_blank">
-          <i class="fab fa-instagram fa-2x text-danger"></i>
+        <a href="https://instagram.com/tuusuario" target="_blank" rel="noopener">
+          <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="instagram" style="width:28px;height:28px"/>
         </a>
       </li>
       <li>
-        <a href="https://facebook.com/tuusuario" target="_blank">
-          <i class="fab fa-facebook fa-2x text-primary"></i>
+        <a href="https://facebook.com/tuusuario" target="_blank" rel="noopener">
+          <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" alt="facebook" style="width:28px;height:28px"/>
         </a>
       </li>
       <li>
-        <a href="https://www.tiktok.com/@tuusuario" target="_blank">
-          <i class="fab fa-tiktok fa-2x"></i>
+        <a href="https://tiktok.com/@tuusuario" target="_blank" rel="noopener">
+          <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/tiktok.svg" alt="tiktok" style="width:28px;height:28px"/>
         </a>
       </li>
     </ul>
+
     <button (click)="cerrarModal()" class="btn-cerrar">Cerrar</button>
   </div>
 </div>
 
-
-<!-- 🛍️ CONTENIDO PRINCIPAL -->
+<!-- 🛍️ PRODUCTOS -->
 <div class="tienda-container">
-  <h2 class="titulo">☕  Catalago de Productos Disponibles</h2>
+  <h2 class="titulo">☕ Catálogo de Productos </h2>
 
   <div class="productos-grid">
     <div *ngFor="let p of productosFiltrados" class="producto-card">
@@ -64,19 +70,34 @@
         alt="{{ p.nombre }}"
         class="producto-img"
       />
+
       <div class="producto-info">
         <h5>{{ p.nombre }}</h5>
         <p class="descripcion">{{ p.descripcion }}</p>
         <p class="precio">💲{{ p.precio | number: '1.2-2' }}</p>
 
-        <button (click)="agregarAlCarrito(p)" class="btn-agregar">
-          ➕ Añadir al carrito
-        </button>
-
-        <button (click)="verResenas(p.id!)" class="btn-resenas">
-          ⭐ Ver reseñas
-        </button>
+        <button (click)="agregarAlCarrito(p)" class="btn-agregar">➕ Añadir al carrito</button>
+        <button (click)="verResenas(p.id!)" class="btn-resenas">⭐ Ver reseñas</button>
       </div>
     </div>
+  </div>
+
+  <!-- 🔢 PAGINACIÓN -->
+  <div class="paginacion" *ngIf="totalPaginas > 1">
+    <button (click)="cambiarPagina(currentPage - 1)" [disabled]="currentPage === 1">⭠ Anterior</button>
+
+    <!-- botones numerados -->
+    <ng-container *ngFor="let i of [].constructor(totalPaginas); let idx = index">
+      <button
+        (click)="cambiarPagina(idx + 1)"
+        [class.activa]="currentPage === idx + 1"
+      >
+        {{ idx + 1 }}
+      </button>
+    </ng-container>
+
+    <button (click)="cambiarPagina(currentPage + 1)" [disabled]="currentPage === totalPaginas">
+      Siguiente ⭢
+    </button>
   </div>
 </div>

@@ -1,90 +1,78 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, catchError, of, throwError } from 'rxjs';
 
-// ✅ Interfaz para los detalles de cada producto dentro del pedido
+// ✅ Interfaz para los detalles del carrito
 export interface DetallePedido {
   id?: number;
-  nombreProducto?: string;
+  nombreProducto: string; // Obligatorio para el backend
   cantidad: number;
-  precio?: number;
-  subtotal?: number;
-
-  // Si el backend envía un objeto producto:
-  producto?: {
-    nombre?: string;
-    precio?: number;
-  };
+  precio: number;
+  subtotal: number;
 }
 
-// ✅ Interfaz principal del pedido
+// ✅ Interfaz principal del pedido sincronizada con el Model Java
 export interface Pedido {
   id?: number;
   mesa: string;
-  productos?: string;
+  productos?: string; // El backend lo generará, pero el front puede enviarlo vacío
   cantidad?: number;
-  total?: number;
+  total: number;
   estado?: string;
-  mozo?: string;
+  mozo: string;
   fecha?: string;
-  detalles?: DetallePedido[];
+  detalles: DetallePedido[]; // Ahora es el corazón del pedido
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class PedidoService {
+  private http = inject(HttpClient);
   private apiUrl = 'http://localhost:8080/api/pedidos';
 
-  constructor(private http: HttpClient) {}
+  constructor() {}
 
-  // 🔹 Obtener todos los pedidos
+  /** 🔹 Obtener todos los pedidos */
   obtenerPedidos(): Observable<Pedido[]> {
     return this.http.get<Pedido[]>(this.apiUrl).pipe(
-      catchError(err => {
-        console.error('❌ Error al obtener pedidos', err);
-        return of([]);
-      })
+      catchError(this.handleError<Pedido[]>('obtenerPedidos', []))
     );
   }
 
-  // 🔹 Crear un nuevo pedido
+  /** 🔹 Crear un nuevo pedido completo con carrito */
   crearPedido(pedido: Pedido): Observable<Pedido> {
+    // El backend espera un objeto Pedido con una lista de detalles
     return this.http.post<Pedido>(this.apiUrl, pedido).pipe(
-      catchError(err => {
-        console.error('❌ Error al crear pedido', err);
-        return throwError(() => err);
-      })
+      catchError(this.handleError<Pedido>('crearPedido'))
     );
   }
 
-  // ✅ Actualizar el estado del pedido (cambio a PATCH y URL correcta)
+  /** ✅ Actualizar el estado (Sincronizado con PutMapping en Java) */
   actualizarEstado(id: number, estado: string): Observable<Pedido> {
+    // Enviamos el Map { "estado": "nuevoEstado" } como espera el controlador
     return this.http.put<Pedido>(`${this.apiUrl}/${id}/estado`, { estado }).pipe(
-      catchError(err => {
-        console.error(`❌ Error al actualizar estado del pedido ${id}`, err);
-        return throwError(() => err);
-      })
+      catchError(this.handleError<Pedido>('actualizarEstado'))
     );
   }
 
-  // 🔹 Eliminar un pedido
+  /** 🔹 Eliminar un pedido */
   eliminarPedido(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
-      catchError(err => {
-        console.error(`❌ Error al eliminar pedido ${id}`, err);
-        return throwError(() => err);
-      })
+      catchError(this.handleError<void>('eliminarPedido'))
     );
   }
 
-  // 🔹 Obtener detalles de un pedido específico (opcional)
-  obtenerDetallesPorPedido(id: number): Observable<DetallePedido[]> {
-    return this.http.get<DetallePedido[]>(`${this.apiUrl}/${id}/detalles`).pipe(
-      catchError(err => {
-        console.error(`❌ Error al obtener detalles del pedido ${id}`, err);
-        return of([]);
-      })
-    );
+  /** * 🛠️ Manejador de errores genérico
+   */
+  private handleError<T>(operation = 'operation', result?: T) {
+    return (error: HttpErrorResponse): Observable<T> => {
+      console.error(`❌ Error en ${operation}:`, error.message);
+      
+      if (result !== undefined) {
+        return of(result as T);
+      }
+      return throwError(() => new Error(error.message));
+    };
   }
 }

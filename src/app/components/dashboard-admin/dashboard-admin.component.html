@@ -8,7 +8,9 @@
   <!-- Sidebar lateral -->
   <aside class="sidebar">
     <div class="logo">
-      ☕ Cafetería
+		<img src="https://cdn-icons-png.flaticon.com/512/924/924514.png" alt="Logo" class="logo-img" />
+		<span class="logo-text">Delicias peruanas</span>
+      
     </div>
 
     <div class="user-info">
@@ -20,10 +22,15 @@
     </div>
 
     <nav>
+		
+		<button [class.active]="mostrar==='inicio'" 
+		          (click)="seleccionarModulo('inicio')">
+		    🏠 Inicio / Información
+		 </button>
       <!-- 🔹 Productos -->
       <button *ngIf="usuario.rol?.toLowerCase() === 'admin'" 
               [class.active]="mostrar==='productos'" 
-              (click)="seleccionarModulo('productos')">📦 Productos</button>
+              (click)="seleccionarModulo('productos')">📦 Registrar Producto</button>
 
       <!-- 🔹 Ventas -->
       <button *ngIf="usuario.rol?.toLowerCase() !== 'mesero' && usuario.rol?.toLowerCase() !== 'cocina'" 
@@ -45,7 +52,7 @@
       <!-- 🔹 Pedidos -->
       <button *ngIf="usuario.rol?.toLowerCase() === 'admin' || usuario.rol?.toLowerCase() === 'mesero'" 
               [class.active]="mostrar==='pedidos'" 
-              (click)="seleccionarModulo('pedidos')">📝 Pedidos</button>
+              (click)="seleccionarModulo('pedidos')">📝 Registrar Pedido</button>
 
       <!-- 🔹 Cocina -->
       <button *ngIf="usuario.rol?.toLowerCase() === 'admin' || usuario.rol?.toLowerCase() === 'cocina'" 
@@ -71,10 +78,12 @@
     </header>
 
     <section class="modulo-container" [ngSwitch]="mostrar">
+	  <app-inicio *ngSwitchCase="'inicio'"></app-inicio>
+	  
       <app-productos *ngSwitchCase="'productos'"></app-productos>
       <app-ventas *ngSwitchCase="'ventas'"></app-ventas>
       <app-historial *ngSwitchCase="'historial'"></app-historial>
-      <app-historial-pedidos *ngSwitchCase="'historial-pedidos'"></app-historial-pedidos> <!-- ✅ Nuevo -->
+      <app-historial-pedidos *ngSwitchCase="'historial-pedidos'"></app-historial-pedidos> 
       <app-pedidos *ngSwitchCase="'pedidos'"></app-pedidos>
       <app-cocina *ngSwitchCase="'cocina'"></app-cocina>
       <app-usuarios *ngSwitchCase="'usuarios'"></app-usuarios>

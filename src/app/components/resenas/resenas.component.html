@@ -6,7 +6,9 @@
     <div *ngIf="resenas && resenas.length > 0; else sinResenas">
       <div *ngFor="let r of resenas" class="resena-item">
         <div class="resena-header">
+          <div class="avatar">{{ obtenerIniciales(r.nombreCliente) }}</div>
           <strong>{{ r.nombreCliente }}</strong>
+          <span class="fecha">{{ r.fecha | date:'shortDate' }}</span>
           <span class="estrellas">
             <ng-container *ngFor="let n of [].constructor(r.calificacion)">
               ⭐
@@ -17,7 +19,6 @@
       </div>
     </div>
 
-    <!-- Mensaje si no hay reseñas -->
     <ng-template #sinResenas>
       <p class="sin-resenas">Aún no hay reseñas para este producto ☕</p>
     </ng-template>
@@ -44,13 +45,16 @@
         required
       ></textarea>
 
-      <select [(ngModel)]="calificacion" name="calificacion" class="form-select">
-        <option *ngFor="let n of [1,2,3,4,5]" [value]="n">
-          {{ n }} estrellas
-        </option>
-      </select>
+      <div class="rating">
+        <span 
+          *ngFor="let n of [1,2,3,4,5]" 
+          (click)="seleccionarCalificacion(n)" 
+          [class.active]="calificacion >= n">
+          ⭐
+        </span>
+      </div>
 
-      <button class="btn-enviar">Enviar reseña</button>
+      <button type="submit" class="btn-enviar">Enviar reseña</button>
     </form>
   </div>
 </div>

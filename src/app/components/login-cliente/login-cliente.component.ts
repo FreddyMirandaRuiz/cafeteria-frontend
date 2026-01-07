@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AuthClienteService } from '../../services/auth-cliente.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login-cliente',
@@ -19,21 +20,53 @@ export class LoginClienteComponent {
   constructor(private auth: AuthClienteService, private router: Router) {}
 
   login() {
-    this.auth.login({ email: this.email, password: this.password }).subscribe({
-      next: (res) => {
-        if (res.token) {
-          this.auth.guardarToken(res.token);
-		  this.auth.guardarNombre(res.nombre);
-          alert('✅ Bienvenido ' + res.nombre);
-          this.router.navigate(['/tienda']);
-        } else {
-          alert('⚠️ Credenciales incorrectas');
-        }
-      },
-      error: (err) => {
-        console.error(err);
-        alert('❌ Error en el servidor');
-      }
-    });
+	
+	if (!this.email || !this.password) {
+	    Swal.fire({
+	      icon: 'warning',
+	      title: 'Campos incompletos',
+	      text: 'Por favor complete todos los campos.',
+	      confirmButtonColor: '#6f4e37'
+	    });
+	    return;
+	  }
+	
+	  this.auth.login({ email: this.email, password: this.password }).subscribe({
+	      next: (res) => {
+	        if (res.token) {
+	          this.auth.guardarToken(res.token);
+	          this.auth.guardarNombre(res.nombre);
+
+	          Swal.fire({
+	            title: `☕ Bienvenido, ${res.nombre}!`,
+	            text: 'Nos alegra tenerte nuevamente por aquí.',
+	            icon: 'success',
+	            confirmButtonText: 'Ir a la tienda',
+	            confirmButtonColor: '#6f4e37',
+	          }).then(() => {
+	            this.router.navigate(['/tienda']);
+	          });
+
+	        } else {
+	          Swal.fire({
+	            icon: 'error',
+	            title: 'Credenciales incorrectas',
+	            text: 'Revise su correo y contraseña.',
+	            confirmButtonColor: '#6f4e37'
+	          });
+	        }
+	      },
+	      error: (err) => {
+	        console.error(err);
+
+	        Swal.fire({
+	          icon: 'error',
+	          title: 'Error en el servidor',
+	          text: 'Intente nuevamente en unos minutos.',
+	          confirmButtonColor: '#6f4e37'
+	        });
+	      }
+	    });  
+    
   }
 }

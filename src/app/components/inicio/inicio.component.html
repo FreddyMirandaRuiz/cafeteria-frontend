@@ -1,0 +1,116 @@
+<div class="welcome-container animate__animated animate__fadeIn">
+  <div class="hero-card shadow-lg">
+    <div class="hero-content">
+      <div class="logo-wrapper">
+        <img src="https://cdn-icons-png.flaticon.com/512/924/924514.png" alt="Logo Cafetería" class="hero-logo" />
+      </div>
+      <div class="hero-text">
+        <h2 class="dynamic-saludo">
+          {{ saludo }} <span class="user-name">{{ usuario?.nombre }}</span>
+        </h2>
+        
+        <p class="current-date">
+          <i class="far fa-calendar-alt me-2"></i>
+          {{ fechaActual | date:'EEEE, d \'de\' MMMM' | titlecase }}
+        </p>
+
+        <h1 class="brand-title">CAFETERÍA DELICIAS PERUANAS S.A.C</h1>
+        <p class="brand-tagline">Tradición y sabor en cada taza</p>
+        
+        <div class="status-badge">
+          <span class="dot"></span> Sistema Operativo Activo
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-card shadow-sm">
+      <div class="icon-circle bg-brown">
+        <i class="fas fa-file-invoice"></i>
+      </div>
+      <div class="info-body">
+        <h6>RUC Comercial</h6>
+        <p>20123456789</p>
+      </div>
+    </div>
+
+    <div class="info-card shadow-sm">
+      <div class="icon-circle bg-gold">
+        <i class="fas fa-map-marker-alt"></i>
+      </div>
+      <div class="info-body">
+        <h6>Ubicación Principal</h6>
+        <p>Av. Los Olivos 123 - Lima</p>
+      </div>
+    </div>
+
+    <div class="info-card shadow-sm clickable" (click)="abrirModal()">
+      <div class="icon-circle bg-blue">
+        <i class="fas fa-phone-alt"></i>
+      </div>
+      <div class="info-body">
+        <h6>Central de Ayuda</h6>
+        <p>(+51) 997-648-811</p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="gallery-container shadow-sm animate__animated animate__fadeInUp">
+    <div class="gallery-header">
+      <h3>Nuestra Cafetería</h3>
+      <p>Tradición y sabor en cada rincón</p>
+    </div>
+    
+    <div class="gallery-grid">
+      <div class="photo-item">
+        <img src="assets/cafeteria-1.jpg" alt="Local Principal">
+        <div class="photo-overlay"><span>Ambiente acogedor</span></div>
+      </div>
+      <div class="photo-item">
+        <img src="assets/cafeteria-2.jpg" alt="Café Especial">
+        <div class="photo-overlay"><span>Nuestra Especialidad</span></div>
+      </div>
+      <div class="photo-item">
+        <img src="assets/cafeteria-3.jpg" alt="Barista">
+        <div class="photo-overlay"><span>Arte en cada taza</span></div>
+      </div>
+      <div class="photo-item">
+        <img src="assets/cafeteria-4.jpg" alt="Postres">
+        <div class="photo-overlay"><span>Dulces Tradicionales</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" *ngIf="modalVisible" (click)="cerrarModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h4>Contáctanos</h4>
+      <p>Escríbenos en nuestras redes o por WhatsApp y te atenderemos </p>
+
+      <ul class="redes">
+        <li>
+          <a href="https://wa.me/51997648811?text=Hola,%20necesito%20asistencia%20con%20el%20sistema%20de%20Delicias%20Peruanas" target="_blank">
+            <img src="https://cdn.simpleicons.org/whatsapp/25D366" alt="whatsapp" class="social-icon"/>
+          </a>
+        </li>
+        <li>
+          <a href="https://instagram.com/" target="_blank">
+            <img src="https://cdn.simpleicons.org/instagram/E4405F" alt="instagram" class="social-icon"/>
+          </a>
+        </li>
+        <li>
+          <a href="https://facebook.com/" target="_blank">
+            <img src="https://cdn.simpleicons.org/facebook/1877F2" alt="facebook" class="social-icon"/>
+          </a>
+        </li>
+        <li>
+          <a href="https://tiktok.com/" target="_blank">
+            <img src="https://cdn.simpleicons.org/tiktok/000000" alt="tiktok" class="social-icon"/>
+          </a>
+        </li>
+      </ul>
+
+      <button (click)="cerrarModal()" class="btn-cerrar">Cerrar</button>
+    </div>
+  </div>
+</div>

@@ -36,6 +36,11 @@ export interface Venta {
   pago?: PagoInfo;
 }
 
+export interface VentaResponse {
+  venta: Venta;
+  qrBase64: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -53,9 +58,9 @@ export class VentaService {
   
   // 🔹 Registrar nueva venta
 
-  registrar(venta: Venta): Observable<Venta> {
-    return this.http.post<Venta>(this.apiUrl, venta);
-  }
+  registrar(venta: Venta): Observable<VentaResponse> {
+      return this.http.post<VentaResponse>(this.apiUrl, venta);
+    }
   
   // 🔹 Obtener una venta por ID
     obtenerPorId(id: number): Observable<Venta> {
